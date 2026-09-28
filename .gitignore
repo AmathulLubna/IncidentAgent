@@ -1,0 +1,38 @@
+# --- Secrets / local config (never push real keys) ---
+.env*
+!.env.example
+!frontend/.env.example
+
+# --- Local databases ---
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+
+# --- Python ---
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+*.egg-info/
+
+# --- Node / frontend ---
+node_modules/
+frontend/dist/
+dist/
+.npm/
+*.log
+
+# --- Generated / local data ---
+data/synthetic_incidents.json
+.streamlit/
+
+# --- OS / IDE ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

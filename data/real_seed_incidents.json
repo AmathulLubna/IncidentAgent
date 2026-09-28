@@ -1,0 +1,19 @@
+[
+  {
+    "_comment": "Replace these with 5-8 real incidents pulled from your own repos' GitHub Issues / Actions failure logs (e.g. trustlens, coding-agent, sih-2026). Keep the same shape as below. Delete this comment field before use.",
+    "service": "example-service",
+    "symptom": "Paste the real error trace / issue body / Actions failure log here.",
+    "timestamp": "2026-08-15T10:00:00Z",
+    "known_root_cause_family": "bad_deploy_config",
+    "known_fix_steps": ["Step as actually taken in the real issue thread", "..."],
+    "source_url": "https://github.com/your-org/your-repo/issues/123"
+  },
+  {
+    "service": "example-service-2",
+    "symptom": "Second real incident goes here.",
+    "timestamp": "2026-08-20T14:30:00Z",
+    "known_root_cause_family": "db_connection_pool_exhaustion",
+    "known_fix_steps": ["..."],
+    "source_url": "https://github.com/your-org/your-repo/issues/456"
+  }
+]

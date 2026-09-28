@@ -1,0 +1,1858 @@
+{
+  "started_at": "2026-09-28T16:55:01.685511+00:00",
+  "base_url": "http://127.0.0.1:8010",
+  "steps": [
+    {
+      "name": "POST /incidents (Payment API)",
+      "request": {
+        "service": "Payment API",
+        "symptom": "Payment API is returning HTTP 503 errors with high latency. Logs show 'MongoServerSelectionError: connection pool exhausted' and MongoDB connection utilization at maximum."
+      },
+      "status_code": 200,
+      "response": {
+        "incident_id": 20,
+        "diagnosis_text": "The Payment API is likely suffering from a MongoDB connection pool exhaustion (root\u2011cause family: db_connection_pool_exhaustion). Evidence: HTTP 503 responses, high latency, logs showing 'MongoServerSelectionError: connection pool exhausted', and MongoDB connection utilization at its maximum. This matches historical incidents #13 and #15 and the documented runbook for the same failure pattern, indicating leaked or unreleased connections filling the pool.",
+        "memory_hit_type": "procedural",
+        "confidence_pct": 95.0,
+        "root_cause_family_guess": "db_connection_pool_exhaustion",
+        "suggested_fix_steps": [
+          "Identify code paths that may be leaking MongoDB connections (review recent changes, add connection\u2011acquire/release logging).",
+          "Fix connection handling so every acquired connection is properly released back to the pool (use try/finally or connection\u2011pool APIs).",
+          "Increase the MongoDB maxPoolSize configuration after confirming the database can handle the higher limit.",
+          "Restart the affected Payment API instances to clear any currently exhausted pools.",
+          "Monitor MongoDB connection pool utilization and HTTP 503 rate to confirm the issue is resolved."
+        ],
+        "memory_hits": [
+          {
+            "memory_type": "episodic",
+            "query": "MongoServerSelectionError connection pool exhausted HTTP 503 Payment API",
+            "snippet": "[INCIDENT #13 RESOLVED] service=Payment API root_cause_family=The Payment API was creating MongoDB connections for individual requests without reliably releasing them. Over time, the number of active connections increased until the MongoDB connection pool reached its maximum limit. New requests could not obtain a database connection, resulting in HTTP 503 errors and increased latency. outcome=success\nConfirmed fix steps:\n  1. 1. Updated the MongoDB connection handling so that connections are properly reused and released.\n  2. 2. Changed the connection pool configuration from maxPoolSize=50 to  \u2026",
+            "memory_id": "2a49d74f-78f7-4a9c-9ceb-9460af122dda",
+            "historical_incident_id": 13,
+            "service": "Payment API",
+            "timestamp": "2026-09-28T00:00:00+00:00",
+            "root_cause_family": "The Payment API was creating MongoDB connections for individual requests without reliably releasing them. Over time, the number of active connections increased until the MongoDB connection pool reached its maximum limit. New requests could not obtain a database connection, resulting in HTTP 503 errors and increased latency.",
+            "outcome": "success",
+            "relevance_score": 1.096721179708553
+          },
+          {
+            "memory_type": "episodic",
+            "query": "MongoServerSelectionError connection pool exhausted HTTP 503 Payment API",
+            "snippet": "[HISTORICAL INCIDENT #15 RESOLVED] service=Payment API occurred_at=2026-09-28T16:48:01.000467+00:00 status=resolved outcome=success root_cause_family=db_connection_pool_exhaustion\nReported symptoms (the evidence this incident was diagnosed from):\nPayment API is returning HTTP 503 errors with high latency. Logs show 'MongoServerSelectionError: connection pool exhausted' and MongoDB connection utilization at maximum.\nConfirmed root cause family: db_connection_pool_exhaustion\nAgent predicted root cause (unconfirmed): mongo_connection_pool_exhaustion\nConfirmed fix steps (engineer-verified):\n  1. I \u2026",
+            "memory_id": "d7cefbfb-b164-49e2-b1eb-223b2fd07fa7",
+            "historical_incident_id": 15,
+            "service": "Payment API",
+            "timestamp": "2026-09-28T16:48:01.000467+00:00",
+            "root_cause_family": "db_connection_pool_exhaustion",
+            "outcome": "success",
+            "relevance_score": 1.0961368505420916
+          },
+          {
+            "memory_type": "procedural",
+            "query": "MongoDB connection pool exhausted HTTP 503 Payment API runbook",
+            "snippet": "[RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)\nOrdered fix steps:\n  1. Identify code paths leaking MongoDB connections\n  2. Fix connection reuse so every acquired connection is released\n  3. Increase maxPoolSize after verifying database capacity\n  4. Monitor connection pool utilization and HTTP 503 rate",
+            "memory_id": "7636f6e5-953a-45a0-96ef-f1fee1a5a04b",
+            "historical_incident_id": null,
+            "service": null,
+            "timestamp": null,
+            "root_cause_family": "db_connection_pool_exhaustion",
+            "outcome": "success",
+            "relevance_score": 1.0406008793779806
+          },
+          {
+            "memory_type": "procedural",
+            "query": "MongoDB connection pool exhausted HTTP 503 Payment API runbook",
+            "snippet": "The runbook for resolving database connection pool exhaustion involves identifying MongoDB connection leaks, fixing connection reuse, increasing maxPoolSize, and monitoring pool utilization.",
+            "memory_id": "5499c238-873c-4d92-988e-30e8993a20b5",
+            "historical_incident_id": null,
+            "service": null,
+            "timestamp": null,
+            "root_cause_family": null,
+            "outcome": null,
+            "relevance_score": 1.0406008793779806
+          },
+          {
+            "memory_type": "procedural",
+            "query": "MongoDB connection pool exhausted HTTP 503 Payment API runbook",
+            "snippet": "[RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)\nOrdered fix steps:\n  1. Identify code paths leaking MongoDB connections\n  2. Fix connection reuse so every acquired connection is released\n  3. Increase maxPoolSize after verifying database capacity\n  4. Monitor connection pool utilization and HTTP 503 rate",
+            "memory_id": "5a9826da-b8b7-4c60-b619-3bec27fc18e9",
+            "historical_incident_id": null,
+            "service": null,
+            "timestamp": "2026-09-28T00:00:00+00:00",
+            "root_cause_family": "db_connection_pool_exhaustion",
+            "outcome": "success",
+            "relevance_score": 0.17450360852305996
+          },
+          {
+            "memory_type": "procedural",
+            "query": "MongoDB connection pool exhausted HTTP 503 Payment API runbook",
+            "snippet": "The root cause of the issue on 2026-09-28 was identified as database connection pool exhaustion.",
+            "memory_id": "b4b78710-fb03-4d42-a582-e3d26146ba7c",
+            "historical_incident_id": null,
+            "service": null,
+            "timestamp": "2026-09-28T00:00:00+00:00",
+            "root_cause_family": null,
+            "outcome": null,
+            "relevance_score": 0.14132816953010027
+          },
+          {
+            "memory_type": "procedural",
+            "query": "MongoDB connection pool exhausted HTTP 503 Payment API runbook",
+            "snippet": "[RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)\nOrdered fix steps:\n  1. Identify code paths leaking MongoDB connections\n  2. Fix connection reuse so every acquired connection is released\n  3. Increase maxPoolSize after verifying database capacity\n  4. Monitor connection pool utilization and HTTP 503 rate",
+            "memory_id": "399673db-8890-47d5-94ad-15b2482f8d18",
+            "historical_incident_id": null,
+            "service": null,
+            "timestamp": "2026-09-28T00:00:00.020000+00:00",
+            "root_cause_family": "db_connection_pool_exhaustion",
+            "outcome": "success",
+            "relevance_score": 0.08570144611189759
+          }
+        ],
+        "model_used": "openai/gpt-oss-120b",
+        "memory_status": "ok",
+        "memory_errors": [],
+        "memory_trace": [
+          {
+            "tier": "episodic",
+            "query": "MongoServerSelectionError connection pool exhausted HTTP 503 Payment API",
+            "status": "ok",
+            "returned": 5,
+            "accepted": 2,
+            "rejected": 2,
+            "error": null
+          },
+          {
+            "tier": "procedural",
+            "query": "MongoDB connection pool exhausted HTTP 503 Payment API runbook",
+            "status": "ok",
+            "returned": 5,
+            "accepted": 5,
+            "rejected": 0,
+            "error": null
+          }
+        ],
+        "evidence": [
+          "Similar past incident for 'MongoServerSelectionError connection pool exhausted HTTP 503 Payment API' \u2014 historical incident #13 (Payment API), outcome=success: [INCIDENT #13 RESOLVED] service=Payment API root_cause_family=The Payment API was creating MongoDB connections for individual requests without reliably releasin",
+          "Similar past incident for 'MongoServerSelectionError connection pool exhausted HTTP 503 Payment API' \u2014 historical incident #15 (Payment API), outcome=success: [HISTORICAL INCIDENT #15 RESOLVED] service=Payment API occurred_at=2026-09-28T16:48:01.000467+00:00 status=resolved outcome=success root_cause_family=db_connect",
+          "Confirmed runbook for 'MongoDB connection pool exhausted HTTP 503 Payment API runbook' \u2014 db_connection_pool_exhaustion: [RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)",
+          "Confirmed runbook for 'MongoDB connection pool exhausted HTTP 503 Payment API runbook' \u2014 : The runbook for resolving database connection pool exhaustion involves identifying MongoDB connection leaks, fixing connection reuse, increasing maxPoolSize, an",
+          "Confirmed runbook for 'MongoDB connection pool exhausted HTTP 503 Payment API runbook' \u2014 db_connection_pool_exhaustion: [RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)",
+          "Confirmed runbook for 'MongoDB connection pool exhausted HTTP 503 Payment API runbook' \u2014 : The root cause of the issue on 2026-09-28 was identified as database connection pool exhaustion.",
+          "Confirmed runbook for 'MongoDB connection pool exhausted HTTP 503 Payment API runbook' \u2014 db_connection_pool_exhaustion: [RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)"
+        ]
+      }
+    },
+    {
+      "name": "POST /incidents/20/resolve",
+      "request": {
+        "root_cause_family": "db_connection_pool_exhaustion",
+        "fix_steps": [
+          "Identify code paths leaking MongoDB connections",
+          "Fix connection reuse so every acquired connection is released",
+          "Increase maxPoolSize after verifying database capacity",
+          "Monitor connection pool utilization and HTTP 503 rate"
+        ],
+        "outcome": "success"
+      },
+      "status_code": 200,
+      "response": {
+        "incident": {
+          "id": 20,
+          "service": "Payment API",
+          "symptom": "Payment API is returning HTTP 503 errors with high latency. Logs show 'MongoServerSelectionError: connection pool exhausted' and MongoDB connection utilization at maximum.",
+          "timestamp": "2026-09-28T16:55:02.344632Z",
+          "status": "resolved",
+          "diagnosis_text": "The Payment API is likely suffering from a MongoDB connection pool exhaustion (root\u2011cause family: db_connection_pool_exhaustion). Evidence: HTTP 503 responses, high latency, logs showing 'MongoServerSelectionError: connection pool exhausted', and MongoDB connection utilization at its maximum. This matches historical incidents #13 and #15 and the documented runbook for the same failure pattern, indicating leaked or unreleased connections filling the pool.",
+          "memory_hit_type": "procedural",
+          "confidence_pct": 95.0,
+          "predicted_root_cause_family": "db_connection_pool_exhaustion",
+          "root_cause_family": "db_connection_pool_exhaustion",
+          "suggested_fix_steps": [
+            "Identify code paths that may be leaking MongoDB connections (review recent changes, add connection\u2011acquire/release logging).",
+            "Fix connection handling so every acquired connection is properly released back to the pool (use try/finally or connection\u2011pool APIs).",
+            "Increase the MongoDB maxPoolSize configuration after confirming the database can handle the higher limit.",
+            "Restart the affected Payment API instances to clear any currently exhausted pools.",
+            "Monitor MongoDB connection pool utilization and HTTP 503 rate to confirm the issue is resolved."
+          ],
+          "fix_steps": [
+            "Identify code paths leaking MongoDB connections",
+            "Fix connection reuse so every acquired connection is released",
+            "Increase maxPoolSize after verifying database capacity",
+            "Monitor connection pool utilization and HTTP 503 rate"
+          ],
+          "outcome": "success",
+          "memory_hits": [
+            {
+              "memory_type": "episodic",
+              "query": "MongoServerSelectionError connection pool exhausted HTTP 503 Payment API",
+              "snippet": "[INCIDENT #13 RESOLVED] service=Payment API root_cause_family=The Payment API was creating MongoDB connections for individual requests without reliably releasing them. Over time, the number of active connections increased until the MongoDB connection pool reached its maximum limit. New requests could not obtain a database connection, resulting in HTTP 503 errors and increased latency. outcome=success\nConfirmed fix steps:\n  1. 1. Updated the MongoDB connection handling so that connections are properly reused and released.\n  2. 2. Changed the connection pool configuration from maxPoolSize=50 to  \u2026",
+              "memory_id": "2a49d74f-78f7-4a9c-9ceb-9460af122dda",
+              "historical_incident_id": 13,
+              "service": "Payment API",
+              "timestamp": "2026-09-28T00:00:00+00:00",
+              "root_cause_family": "The Payment API was creating MongoDB connections for individual requests without reliably releasing them. Over time, the number of active connections increased until the MongoDB connection pool reached its maximum limit. New requests could not obtain a database connection, resulting in HTTP 503 errors and increased latency.",
+              "outcome": "success",
+              "relevance_score": 1.096721179708553
+            },
+            {
+              "memory_type": "episodic",
+              "query": "MongoServerSelectionError connection pool exhausted HTTP 503 Payment API",
+              "snippet": "[HISTORICAL INCIDENT #15 RESOLVED] service=Payment API occurred_at=2026-09-28T16:48:01.000467+00:00 status=resolved outcome=success root_cause_family=db_connection_pool_exhaustion\nReported symptoms (the evidence this incident was diagnosed from):\nPayment API is returning HTTP 503 errors with high latency. Logs show 'MongoServerSelectionError: connection pool exhausted' and MongoDB connection utilization at maximum.\nConfirmed root cause family: db_connection_pool_exhaustion\nAgent predicted root cause (unconfirmed): mongo_connection_pool_exhaustion\nConfirmed fix steps (engineer-verified):\n  1. I \u2026",
+              "memory_id": "d7cefbfb-b164-49e2-b1eb-223b2fd07fa7",
+              "historical_incident_id": 15,
+              "service": "Payment API",
+              "timestamp": "2026-09-28T16:48:01.000467+00:00",
+              "root_cause_family": "db_connection_pool_exhaustion",
+              "outcome": "success",
+              "relevance_score": 1.0961368505420916
+            },
+            {
+              "memory_type": "procedural",
+              "query": "MongoDB connection pool exhausted HTTP 503 Payment API runbook",
+              "snippet": "[RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)\nOrdered fix steps:\n  1. Identify code paths leaking MongoDB connections\n  2. Fix connection reuse so every acquired connection is released\n  3. Increase maxPoolSize after verifying database capacity\n  4. Monitor connection pool utilization and HTTP 503 rate",
+              "memory_id": "7636f6e5-953a-45a0-96ef-f1fee1a5a04b",
+              "historical_incident_id": null,
+              "service": null,
+              "timestamp": null,
+              "root_cause_family": "db_connection_pool_exhaustion",
+              "outcome": "success",
+              "relevance_score": 1.0406008793779806
+            },
+            {
+              "memory_type": "procedural",
+              "query": "MongoDB connection pool exhausted HTTP 503 Payment API runbook",
+              "snippet": "The runbook for resolving database connection pool exhaustion involves identifying MongoDB connection leaks, fixing connection reuse, increasing maxPoolSize, and monitoring pool utilization.",
+              "memory_id": "5499c238-873c-4d92-988e-30e8993a20b5",
+              "historical_incident_id": null,
+              "service": null,
+              "timestamp": null,
+              "root_cause_family": null,
+              "outcome": null,
+              "relevance_score": 1.0406008793779806
+            },
+            {
+              "memory_type": "procedural",
+              "query": "MongoDB connection pool exhausted HTTP 503 Payment API runbook",
+              "snippet": "[RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)\nOrdered fix steps:\n  1. Identify code paths leaking MongoDB connections\n  2. Fix connection reuse so every acquired connection is released\n  3. Increase maxPoolSize after verifying database capacity\n  4. Monitor connection pool utilization and HTTP 503 rate",
+              "memory_id": "5a9826da-b8b7-4c60-b619-3bec27fc18e9",
+              "historical_incident_id": null,
+              "service": null,
+              "timestamp": "2026-09-28T00:00:00+00:00",
+              "root_cause_family": "db_connection_pool_exhaustion",
+              "outcome": "success",
+              "relevance_score": 0.17450360852305996
+            },
+            {
+              "memory_type": "procedural",
+              "query": "MongoDB connection pool exhausted HTTP 503 Payment API runbook",
+              "snippet": "The root cause of the issue on 2026-09-28 was identified as database connection pool exhaustion.",
+              "memory_id": "b4b78710-fb03-4d42-a582-e3d26146ba7c",
+              "historical_incident_id": null,
+              "service": null,
+              "timestamp": "2026-09-28T00:00:00+00:00",
+              "root_cause_family": null,
+              "outcome": null,
+              "relevance_score": 0.14132816953010027
+            },
+            {
+              "memory_type": "procedural",
+              "query": "MongoDB connection pool exhausted HTTP 503 Payment API runbook",
+              "snippet": "[RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)\nOrdered fix steps:\n  1. Identify code paths leaking MongoDB connections\n  2. Fix connection reuse so every acquired connection is released\n  3. Increase maxPoolSize after verifying database capacity\n  4. Monitor connection pool utilization and HTTP 503 rate",
+              "memory_id": "399673db-8890-47d5-94ad-15b2482f8d18",
+              "historical_incident_id": null,
+              "service": null,
+              "timestamp": "2026-09-28T00:00:00.020000+00:00",
+              "root_cause_family": "db_connection_pool_exhaustion",
+              "outcome": "success",
+              "relevance_score": 0.08570144611189759
+            }
+          ],
+          "evidence": [
+            "Similar past incident for 'MongoServerSelectionError connection pool exhausted HTTP 503 Payment API' \u2014 historical incident #13 (Payment API), outcome=success: [INCIDENT #13 RESOLVED] service=Payment API root_cause_family=The Payment API was creating MongoDB connections for individual requests without reliably releasin",
+            "Similar past incident for 'MongoServerSelectionError connection pool exhausted HTTP 503 Payment API' \u2014 historical incident #15 (Payment API), outcome=success: [HISTORICAL INCIDENT #15 RESOLVED] service=Payment API occurred_at=2026-09-28T16:48:01.000467+00:00 status=resolved outcome=success root_cause_family=db_connect",
+            "Confirmed runbook for 'MongoDB connection pool exhausted HTTP 503 Payment API runbook' \u2014 db_connection_pool_exhaustion: [RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)",
+            "Confirmed runbook for 'MongoDB connection pool exhausted HTTP 503 Payment API runbook' \u2014 : The runbook for resolving database connection pool exhaustion involves identifying MongoDB connection leaks, fixing connection reuse, increasing maxPoolSize, an",
+            "Confirmed runbook for 'MongoDB connection pool exhausted HTTP 503 Payment API runbook' \u2014 db_connection_pool_exhaustion: [RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)",
+            "Confirmed runbook for 'MongoDB connection pool exhausted HTTP 503 Payment API runbook' \u2014 : The root cause of the issue on 2026-09-28 was identified as database connection pool exhaustion.",
+            "Confirmed runbook for 'MongoDB connection pool exhausted HTTP 503 Payment API runbook' \u2014 db_connection_pool_exhaustion: [RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)"
+          ],
+          "memory_trace": [
+            {
+              "tier": "episodic",
+              "query": "MongoServerSelectionError connection pool exhausted HTTP 503 Payment API",
+              "status": "ok",
+              "returned": 5,
+              "accepted": 2,
+              "rejected": 2,
+              "error": null
+            },
+            {
+              "tier": "procedural",
+              "query": "MongoDB connection pool exhausted HTTP 503 Payment API runbook",
+              "status": "ok",
+              "returned": 5,
+              "accepted": 5,
+              "rejected": 0,
+              "error": null
+            }
+          ],
+          "memory_status": "ok",
+          "memory_errors": [],
+          "model_used": "openai/gpt-oss-120b",
+          "created_at": "2026-09-28T16:55:02.345895Z"
+        },
+        "memory_status": "ok",
+        "errors": [],
+        "promotion": {
+          "root_cause_family": "db_connection_pool_exhaustion",
+          "success_rate": 1.0,
+          "attempts": 3,
+          "retained": true
+        },
+        "consolidation": null,
+        "success_rate": {
+          "attempts": 3,
+          "success_rate": 1.0
+        }
+      }
+    },
+    {
+      "name": "POST /incidents (Order API)",
+      "request": {
+        "service": "Order API",
+        "symptom": "Order API is intermittently returning HTTP 503 errors with high latency. MongoDB connection utilization: 97%. Logs show 'connection pool exhausted' during peak traffic."
+      },
+      "status_code": 200,
+      "response": {
+        "incident_id": 21,
+        "diagnosis_text": "The Order API 503s and high latency are likely caused by MongoDB connection pool exhaustion (connection utilization at 97% and logs showing 'connection pool exhausted'). This mirrors historical Incident #15 on the Payment API, which was confirmed to be a db_connection_pool_exhaustion problem.",
+        "memory_hit_type": "procedural",
+        "confidence_pct": 92.0,
+        "root_cause_family_guess": "db_connection_pool_exhaustion",
+        "suggested_fix_steps": [
+          "Identify code paths in the Order API that may be leaking or not releasing MongoDB connections (review recent deployments, add logging around acquire/release).",
+          "Fix the connection reuse logic so every acquired connection is properly released/closed after use.",
+          "Increase the MongoDB driver maxPoolSize setting after confirming the database can handle the higher limit.",
+          "Redeploy the updated Order API and monitor connection pool utilization and HTTP 503 rate to confirm the issue is resolved."
+        ],
+        "memory_hits": [
+          {
+            "memory_type": "episodic",
+            "query": "Order API HTTP 503 MongoDB connection pool exhausted",
+            "snippet": "[HISTORICAL INCIDENT #15 RESOLVED] service=Payment API occurred_at=2026-09-28T16:48:01.000467+00:00 status=resolved outcome=success root_cause_family=db_connection_pool_exhaustion\nReported symptoms (the evidence this incident was diagnosed from):\nPayment API is returning HTTP 503 errors with high latency. Logs show 'MongoServerSelectionError: connection pool exhausted' and MongoDB connection utilization at maximum.\nConfirmed root cause family: db_connection_pool_exhaustion\nAgent predicted root cause (unconfirmed): mongo_connection_pool_exhaustion\nConfirmed fix steps (engineer-verified):\n  1. I \u2026",
+            "memory_id": "d7cefbfb-b164-49e2-b1eb-223b2fd07fa7",
+            "historical_incident_id": 15,
+            "service": "Payment API",
+            "timestamp": "2026-09-28T16:48:01.000467+00:00",
+            "root_cause_family": "db_connection_pool_exhaustion",
+            "outcome": "success",
+            "relevance_score": 1.094166347544883
+          },
+          {
+            "memory_type": "procedural",
+            "query": "MongoDB connection pool exhausted",
+            "snippet": "The runbook for resolving database connection pool exhaustion involves identifying MongoDB connection leaks, fixing connection reuse, increasing maxPoolSize, and monitoring pool utilization.",
+            "memory_id": "5499c238-873c-4d92-988e-30e8993a20b5",
+            "historical_incident_id": null,
+            "service": null,
+            "timestamp": null,
+            "root_cause_family": null,
+            "outcome": null,
+            "relevance_score": 1.1025188680511566
+          },
+          {
+            "memory_type": "procedural",
+            "query": "MongoDB connection pool exhausted",
+            "snippet": "[RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 3 confirmed attempts)\nOrdered fix steps:\n  1. Identify code paths leaking MongoDB connections\n  2. Fix connection reuse so every acquired connection is released\n  3. Increase maxPoolSize after verifying database capacity\n  4. Monitor connection pool utilization and HTTP 503 rate",
+            "memory_id": "7a7acfff-0920-4343-b558-0e8e994908f0",
+            "historical_incident_id": null,
+            "service": null,
+            "timestamp": null,
+            "root_cause_family": "db_connection_pool_exhaustion",
+            "outcome": "success",
+            "relevance_score": 1.0973839687158908
+          },
+          {
+            "memory_type": "procedural",
+            "query": "MongoDB connection pool exhausted",
+            "snippet": "[RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)\nOrdered fix steps:\n  1. Identify code paths leaking MongoDB connections\n  2. Fix connection reuse so every acquired connection is released\n  3. Increase maxPoolSize after verifying database capacity\n  4. Monitor connection pool utilization and HTTP 503 rate",
+            "memory_id": "7636f6e5-953a-45a0-96ef-f1fee1a5a04b",
+            "historical_incident_id": null,
+            "service": null,
+            "timestamp": null,
+            "root_cause_family": "db_connection_pool_exhaustion",
+            "outcome": "success",
+            "relevance_score": 1.0949288613421198
+          },
+          {
+            "memory_type": "procedural",
+            "query": "MongoDB connection pool exhausted",
+            "snippet": "[RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)\nOrdered fix steps:\n  1. Identify code paths leaking MongoDB connections\n  2. Fix connection reuse so every acquired connection is released\n  3. Increase maxPoolSize after verifying database capacity\n  4. Monitor connection pool utilization and HTTP 503 rate",
+            "memory_id": "399673db-8890-47d5-94ad-15b2482f8d18",
+            "historical_incident_id": null,
+            "service": null,
+            "timestamp": "2026-09-28T00:00:00.020000+00:00",
+            "root_cause_family": "db_connection_pool_exhaustion",
+            "outcome": "success",
+            "relevance_score": 0.978139123900864
+          },
+          {
+            "memory_type": "procedural",
+            "query": "MongoDB connection pool exhausted",
+            "snippet": "The resolution process for the database connection pool exhaustion on 2026-09-28 was successful after 3 attempts.",
+            "memory_id": "d938c232-0982-42b9-8c4f-7098874a79a7",
+            "historical_incident_id": null,
+            "service": null,
+            "timestamp": "2026-09-28T00:00:00.020000+00:00",
+            "root_cause_family": null,
+            "outcome": null,
+            "relevance_score": 0.9770566895026809
+          }
+        ],
+        "model_used": "openai/gpt-oss-120b",
+        "memory_status": "ok",
+        "memory_errors": [],
+        "memory_trace": [
+          {
+            "tier": "episodic",
+            "query": "Order API HTTP 503 MongoDB connection pool exhausted",
+            "status": "ok",
+            "returned": 5,
+            "accepted": 1,
+            "rejected": 4,
+            "error": null
+          },
+          {
+            "tier": "procedural",
+            "query": "MongoDB connection pool exhausted",
+            "status": "ok",
+            "returned": 5,
+            "accepted": 5,
+            "rejected": 0,
+            "error": null
+          }
+        ],
+        "evidence": [
+          "Similar past incident for 'Order API HTTP 503 MongoDB connection pool exhausted' \u2014 historical incident #15 (Payment API), outcome=success: [HISTORICAL INCIDENT #15 RESOLVED] service=Payment API occurred_at=2026-09-28T16:48:01.000467+00:00 status=resolved outcome=success root_cause_family=db_connect",
+          "Confirmed runbook for 'MongoDB connection pool exhausted' \u2014 : The runbook for resolving database connection pool exhaustion involves identifying MongoDB connection leaks, fixing connection reuse, increasing maxPoolSize, an",
+          "Confirmed runbook for 'MongoDB connection pool exhausted' \u2014 db_connection_pool_exhaustion: [RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 3 confirmed attempts)",
+          "Confirmed runbook for 'MongoDB connection pool exhausted' \u2014 db_connection_pool_exhaustion: [RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)",
+          "Confirmed runbook for 'MongoDB connection pool exhausted' \u2014 db_connection_pool_exhaustion: [RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)",
+          "Confirmed runbook for 'MongoDB connection pool exhausted' \u2014 : The resolution process for the database connection pool exhaustion on 2026-09-28 was successful after 3 attempts."
+        ]
+      }
+    },
+    {
+      "name": "GET /incidents (history for provenance check)",
+      "request": {},
+      "status_code": 200,
+      "response": [
+        {
+          "id": 1,
+          "service": "payment service",
+          "symptom": "users are not able to acess payment service,its showing 503 error",
+          "timestamp": "2026-09-28T03:19:00.682083Z",
+          "status": "diagnosed",
+          "diagnosis_text": null,
+          "memory_hit_type": "none",
+          "confidence_pct": null,
+          "predicted_root_cause_family": null,
+          "root_cause_family": null,
+          "suggested_fix_steps": [],
+          "fix_steps": [],
+          "outcome": null,
+          "memory_hits": [],
+          "evidence": [],
+          "memory_trace": [],
+          "memory_status": "ok",
+          "memory_errors": [],
+          "model_used": null,
+          "created_at": "2026-09-28T03:19:00.683547Z"
+        },
+        {
+          "id": 2,
+          "service": "payment service",
+          "symptom": "users are not able to acess payment service,its showing 503 error",
+          "timestamp": "2026-09-28T03:26:40.364827Z",
+          "status": "diagnosed",
+          "diagnosis_text": null,
+          "memory_hit_type": "none",
+          "confidence_pct": null,
+          "predicted_root_cause_family": null,
+          "root_cause_family": null,
+          "suggested_fix_steps": [],
+          "fix_steps": [],
+          "outcome": null,
+          "memory_hits": [],
+          "evidence": [],
+          "memory_trace": [],
+          "memory_status": "ok",
+          "memory_errors": [],
+          "model_used": null,
+          "created_at": "2026-09-28T03:26:40.365720Z"
+        },
+        {
+          "id": 3,
+          "service": "auth-service",
+          "symptom": "Users are receiving intermittent 401 responses after token refresh. The issue started shortly after the latest auth deployment. Logs show token validation failures and refresh requests timing out.",
+          "timestamp": "2026-09-28T03:51:02.189107Z",
+          "status": "diagnosed",
+          "diagnosis_text": null,
+          "memory_hit_type": "none",
+          "confidence_pct": null,
+          "predicted_root_cause_family": null,
+          "root_cause_family": null,
+          "suggested_fix_steps": [],
+          "fix_steps": [],
+          "outcome": null,
+          "memory_hits": [],
+          "evidence": [],
+          "memory_trace": [],
+          "memory_status": "ok",
+          "memory_errors": [],
+          "model_used": null,
+          "created_at": "2026-09-28T03:51:02.190584Z"
+        },
+        {
+          "id": 4,
+          "service": "auth-service",
+          "symptom": "Users are receiving intermittent 401 responses after token refresh. The issue started shortly after the latest auth deployment. Logs show token validation failures and refresh requests timing out.",
+          "timestamp": "2026-09-28T03:59:48.190075Z",
+          "status": "resolved",
+          "diagnosis_text": "Automated diagnosis is temporarily unavailable (LLM error after fallback). Please triage manually; this incident has still been recorded.",
+          "memory_hit_type": "none",
+          "confidence_pct": null,
+          "predicted_root_cause_family": null,
+          "root_cause_family": "something",
+          "suggested_fix_steps": [],
+          "fix_steps": [
+            "its just testing ,do anything it will be fixed"
+          ],
+          "outcome": "success",
+          "memory_hits": [],
+          "evidence": [],
+          "memory_trace": [],
+          "memory_status": "ok",
+          "memory_errors": [],
+          "model_used": "none (error)",
+          "created_at": "2026-09-28T03:59:48.191493Z"
+        },
+        {
+          "id": 5,
+          "service": "auth-service",
+          "symptom": "Users are receiving intermittent 401 responses after token refresh. The issue started shortly after the latest auth deployment. Logs show token validation failures and refresh requests timing out.",
+          "timestamp": "2026-09-28T04:05:03.842694Z",
+          "status": "resolved",
+          "diagnosis_text": "Automated diagnosis is temporarily unavailable (LLM error after fallback). Please triage manually; this incident has still been recorded.",
+          "memory_hit_type": "none",
+          "confidence_pct": null,
+          "predicted_root_cause_family": null,
+          "root_cause_family": "something",
+          "suggested_fix_steps": [],
+          "fix_steps": [
+            "do anything it will work"
+          ],
+          "outcome": "success",
+          "memory_hits": [],
+          "evidence": [],
+          "memory_trace": [],
+          "memory_status": "ok",
+          "memory_errors": [],
+          "model_used": "none (error)",
+          "created_at": "2026-09-28T04:05:03.843638Z"
+        },
+        {
+          "id": 6,
+          "service": "auth-service",
+          "symptom": "Users are receiving intermittent 401 responses after token refresh. The issue started shortly after the latest auth deployment. Logs show token validation failures and refresh requests timing out.",
+          "timestamp": "2026-09-28T04:06:29.145565Z",
+          "status": "diagnosed",
+          "diagnosis_text": "Automated diagnosis is temporarily unavailable (LLM error after fallback). Please triage manually; this incident has still been recorded.",
+          "memory_hit_type": "none",
+          "confidence_pct": null,
+          "predicted_root_cause_family": null,
+          "root_cause_family": null,
+          "suggested_fix_steps": [],
+          "fix_steps": [],
+          "outcome": null,
+          "memory_hits": [],
+          "evidence": [],
+          "memory_trace": [],
+          "memory_status": "ok",
+          "memory_errors": [],
+          "model_used": "none (error)",
+          "created_at": "2026-09-28T04:06:29.146634Z"
+        },
+        {
+          "id": 7,
+          "service": "auth-service",
+          "symptom": "Users are receiving intermittent 401 responses after token refresh. The issue started shortly after the latest auth deployment. Logs show token validation failures and refresh requests timing out.",
+          "timestamp": "2026-09-28T04:14:37.164367Z",
+          "status": "diagnosed",
+          "diagnosis_text": "Automated diagnosis is temporarily unavailable (LLM error after fallback). Please triage manually; this incident has still been recorded.",
+          "memory_hit_type": "none",
+          "confidence_pct": null,
+          "predicted_root_cause_family": null,
+          "root_cause_family": null,
+          "suggested_fix_steps": [],
+          "fix_steps": [],
+          "outcome": null,
+          "memory_hits": [],
+          "evidence": [],
+          "memory_trace": [],
+          "memory_status": "ok",
+          "memory_errors": [],
+          "model_used": "none (error)",
+          "created_at": "2026-09-28T04:14:37.165524Z"
+        },
+        {
+          "id": 8,
+          "service": "auth-service",
+          "symptom": "Users are receiving intermittent 401 responses after token refresh. The issue started shortly after the latest auth deployment. Logs show token validation failures and refresh requests timing out.",
+          "timestamp": "2026-09-28T09:55:21.886669Z",
+          "status": "resolved",
+          "diagnosis_text": "This incident mirrors the one in incident #5 on 2026\u201109\u201128, where a deployment introduced a mis\u2011configured JWT secret that caused token validation failures and intermittent 401 responses after refresh. The symptom pattern\u2014intermittent 401s, token validation errors, and refresh timeouts\u2014matches exactly.",
+          "memory_hit_type": "episodic",
+          "confidence_pct": null,
+          "predicted_root_cause_family": null,
+          "root_cause_family": "auth_token_expiry",
+          "suggested_fix_steps": [],
+          "fix_steps": [
+            "Check recent deploy touching auth/token-refresh",
+            "Rollback offending deploy if confirmed",
+            "Verify token TTL configuration",
+            "Force-refresh affected cached tokens"
+          ],
+          "outcome": "success",
+          "memory_hits": [],
+          "evidence": [],
+          "memory_trace": [],
+          "memory_status": "ok",
+          "memory_errors": [],
+          "model_used": "openai/gpt-oss-20b",
+          "created_at": "2026-09-28T09:55:21.887302Z"
+        },
+        {
+          "id": 9,
+          "service": "reservation service ",
+          "symptom": "reservation service is throwing error ",
+          "timestamp": "2026-09-28T10:03:14.278462Z",
+          "status": "resolved",
+          "diagnosis_text": "Automated diagnosis is temporarily unavailable (LLM error after fallback). Please triage manually; this incident has still been recorded.",
+          "memory_hit_type": "none",
+          "confidence_pct": null,
+          "predicted_root_cause_family": null,
+          "root_cause_family": "dontknow",
+          "suggested_fix_steps": [],
+          "fix_steps": [],
+          "outcome": "success",
+          "memory_hits": [],
+          "evidence": [],
+          "memory_trace": [],
+          "memory_status": "ok",
+          "memory_errors": [],
+          "model_used": "none (error)",
+          "created_at": "2026-09-28T10:03:14.279347Z"
+        },
+        {
+          "id": 10,
+          "service": "auth-service",
+          "symptom": "Users are receiving intermittent 401 responses after token refresh. The issue started shortly after the latest auth deployment. Logs show token validation failures and refresh requests timing out.",
+          "timestamp": "2026-09-28T10:04:17.242648Z",
+          "status": "diagnosed",
+          "diagnosis_text": "Automated diagnosis is temporarily unavailable (LLM error after fallback). Please triage manually; this incident has still been recorded.",
+          "memory_hit_type": "none",
+          "confidence_pct": null,
+          "predicted_root_cause_family": null,
+          "root_cause_family": null,
+          "suggested_fix_steps": [],
+          "fix_steps": [],
+          "outcome": null,
+          "memory_hits": [],
+          "evidence": [],
+          "memory_trace": [],
+          "memory_status": "ok",
+          "memory_errors": [],
+          "model_used": "none (error)",
+          "created_at": "2026-09-28T10:04:17.243470Z"
+        },
+        {
+          "id": 11,
+          "service": "auth-service",
+          "symptom": "Users are receiving intermittent 401 responses after token refresh. The issue started shortly after the latest auth deployment. Logs show token validation failures and refresh requests timing out.",
+          "timestamp": "2026-09-28T10:09:47.175598Z",
+          "status": "resolved",
+          "diagnosis_text": "This incident mirrors recent incidents #5 and #8 where a deployment introduced a token TTL misconfiguration, leading to intermittent 401 responses after token refresh. The likely root cause is an incorrect token expiration setting or cached token state introduced by the latest auth-service deployment. Rolling back the deployment or correcting the TTL configuration and clearing cached tokens should resolve the issue.",
+          "memory_hit_type": "episodic",
+          "confidence_pct": null,
+          "predicted_root_cause_family": null,
+          "root_cause_family": "auth_token_expiry",
+          "suggested_fix_steps": [],
+          "fix_steps": [
+            "eat and sleep"
+          ],
+          "outcome": "success",
+          "memory_hits": [],
+          "evidence": [],
+          "memory_trace": [],
+          "memory_status": "ok",
+          "memory_errors": [],
+          "model_used": "openai/gpt-oss-120b",
+          "created_at": "2026-09-28T10:09:47.176672Z"
+        },
+        {
+          "id": 13,
+          "service": "Payment API",
+          "symptom": "ayment requests are intermittently failing with HTTP 503 errors.\nError logs show:\n\"MongoServerSelectionError: connection pool exhausted\"\n\nAdditional context:\n- Error rate: 18%\n- Latency increased from 250ms to 3.2s\n- CPU usage is normal\n- Database connection count is near the configured maximum\n- Restarting the payment service temporarily reduces the errors",
+          "timestamp": "2026-09-28T13:44:00.489456Z",
+          "status": "resolved",
+          "diagnosis_text": "This incident matches a previously recorded Payment API outage where the MongoDB connection pool was exhausted, causing intermittent HTTP 503 errors and high latency. The root cause is likely that the service is hitting the configured maximum number of DB connections, possibly due to a connection leak or insufficient pool size. Increasing the connection pool limit and reviewing the service's DB client usage should resolve the issue; the temporary service restart you observed is consistent with clearing exhausted connections.",
+          "memory_hit_type": "episodic",
+          "confidence_pct": null,
+          "predicted_root_cause_family": null,
+          "root_cause_family": "The Payment API was creating MongoDB connections for individual requests without reliably releasing them. Over time, the number of active connections increased until the MongoDB connection pool reached its maximum limit. New requests could not obtain a database connection, resulting in HTTP 503 errors and increased latency.",
+          "suggested_fix_steps": [],
+          "fix_steps": [
+            "1. Updated the MongoDB connection handling so that connections are properly reused and released.",
+            "2. Changed the connection pool configuration from maxPoolSize=50 to maxPoolSize=100 after confirming database capacity.",
+            "3. Restarted the affected Payment API instances to clear the exhausted connection pools.",
+            "4. Verified that active database connections returned to normal levels.",
+            "5. Monitored the Payment API for 30 minutes.",
+            "6. HTTP 503 errors dropped from 18% to 0%.",
+            "7. P95 latency returned from 3.2s to approximately 280ms."
+          ],
+          "outcome": "success",
+          "memory_hits": [],
+          "evidence": [],
+          "memory_trace": [],
+          "memory_status": "ok",
+          "memory_errors": [],
+          "model_used": "openai/gpt-oss-120b",
+          "created_at": "2026-09-28T13:44:00.492841Z"
+        },
+        {
+          "id": 14,
+          "service": "Service: Order API",
+          "symptom": "The Order API is intermittently returning HTTP 503 errors.\nRequest latency has increased significantly, especially during peak traffic.\n\nAdditional context:\n- HTTP 503 error rate: 14%\n- P95 latency increased from 300ms to 3.5s\n- CPU utilization: 42%\n- Memory utilization: 51%\n- MongoDB connection utilization: 97%\n- MongoDB connection pool is configured with maxPoolSize=50\n- Application logs contain:\n  \"MongoServerSelectionError: connection pool exhausted\"\n- Restarting one Order API instance temporarily reduces the errors",
+          "timestamp": "2026-09-28T13:49:09.769768Z",
+          "status": "diagnosed",
+          "diagnosis_text": "This incident matches a recent Order API outage where the MongoDB connection pool was exhausted (97% utilization) leading to intermittent HTTP 503 responses and latency spikes. The root cause was the maxPoolSize=50 being insufficient under peak load, causing connection leaks and pool exhaustion. Increasing the pool size and ensuring connections are properly released should resolve the issue.",
+          "memory_hit_type": "episodic",
+          "confidence_pct": null,
+          "predicted_root_cause_family": "mongo_connection_pool_exhaustion",
+          "root_cause_family": null,
+          "suggested_fix_steps": [],
+          "fix_steps": [],
+          "outcome": null,
+          "memory_hits": [],
+          "evidence": [],
+          "memory_trace": [],
+          "memory_status": "ok",
+          "memory_errors": [],
+          "model_used": "openai/gpt-oss-120b",
+          "created_at": "2026-09-28T13:49:09.772214Z"
+        },
+        {
+          "id": 15,
+          "service": "Payment API",
+          "symptom": "Payment API is returning HTTP 503 errors with high latency. Logs show 'MongoServerSelectionError: connection pool exhausted' and MongoDB connection utilization at maximum.",
+          "timestamp": "2026-09-28T16:48:01.000467Z",
+          "status": "resolved",
+          "diagnosis_text": "The Payment API is likely suffering from MongoDB connection pool exhaustion: connections are not being released/reused, causing the pool to hit its max limit, which leads to MongoServerSelectionError and HTTP 503 responses with high latency. This mirrors Incident #13 (Payment API) where the same symptom was resolved by fixing connection handling and increasing the pool size.",
+          "memory_hit_type": "episodic",
+          "confidence_pct": 92.0,
+          "predicted_root_cause_family": "mongo_connection_pool_exhaustion",
+          "root_cause_family": "db_connection_pool_exhaustion",
+          "suggested_fix_steps": [
+            "Check the current MongoDB connection pool metrics (maxPoolSize, active connections) and confirm utilization is at 100%.",
+            "Inspect the Payment API code or configuration for connection handling; ensure connections are obtained from a shared pool and properly released after each request.",
+            "If the code is correct, increase the MongoDB driver maxPoolSize (e.g., from 50 to 100) after confirming database capacity.",
+            "Restart the Payment API instances to clear the exhausted connection pool and apply any configuration changes.",
+            "Verify that active connections drop to normal levels, HTTP 503 errors cease, and latency returns to baseline.",
+            "Monitor the service for at least 30 minutes to ensure stability."
+          ],
+          "fix_steps": [
+            "Identify code paths leaking MongoDB connections",
+            "Fix connection reuse so every acquired connection is released",
+            "Increase maxPoolSize after verifying database capacity",
+            "Monitor connection pool utilization and HTTP 503 rate"
+          ],
+          "outcome": "success",
+          "memory_hits": [
+            {
+              "memory_type": "episodic",
+              "query": "MongoServerSelectionError connection pool exhausted HTTP 503 Payment API",
+              "snippet": "The Payment API experienced HTTP 503 errors and high latency due to MongoDB connection pool exhaustion caused by unreleased connections; the incident was resolved on 2026-09-28 by updating connection handling, increasing maxPoolSize from 50 to 100, and restarting instances, resulting in 0% error rate and P95 latency improvement to 280ms.",
+              "memory_id": "bf7685fe-c034-4f3a-8fac-fc710c899928",
+              "historical_incident_id": null,
+              "service": null,
+              "timestamp": "2026-09-27T18:50:32.040941+00:00",
+              "root_cause_family": null,
+              "outcome": null,
+              "relevance_score": 1.1254813018771668
+            },
+            {
+              "memory_type": "episodic",
+              "query": "MongoServerSelectionError connection pool exhausted HTTP 503 Payment API",
+              "snippet": "[INCIDENT #13 RESOLVED] service=Payment API root_cause_family=The Payment API was creating MongoDB connections for individual requests without reliably releasing them. Over time, the number of active connections increased until the MongoDB connection pool reached its maximum limit. New requests could not obtain a database connection, resulting in HTTP 503 errors and increased latency. outcome=success\nConfirmed fix steps:\n  1. 1. Updated the MongoDB connection handling so that connections are properly reused and released.\n  2. 2. Changed the connection pool configuration from maxPoolSize=50 to  \u2026",
+              "memory_id": "2a49d74f-78f7-4a9c-9ceb-9460af122dda",
+              "historical_incident_id": 13,
+              "service": "Payment API",
+              "timestamp": "2026-09-28T00:00:00+00:00",
+              "root_cause_family": "The Payment API was creating MongoDB connections for individual requests without reliably releasing them. Over time, the number of active connections increased until the MongoDB connection pool reached its maximum limit. New requests could not obtain a database connection, resulting in HTTP 503 errors and increased latency.",
+              "outcome": "success",
+              "relevance_score": 1.0967238523144496
+            },
+            {
+              "memory_type": "episodic",
+              "query": "MongoServerSelectionError connection pool exhausted HTTP 503 Payment API",
+              "snippet": "The order-service is experiencing intermittent HTTP 503 errors and significant latency increases during peak traffic as of 2026-09-28; the issue is linked to MongoDB connection pool exhaustion (97% utilization), and restarting API instances provides temporary relief.",
+              "memory_id": "b48b32b6-da8e-43dd-a5ac-a7de214cd6c7",
+              "historical_incident_id": null,
+              "service": null,
+              "timestamp": "2026-09-28T02:56:40.095726+00:00",
+              "root_cause_family": null,
+              "outcome": null,
+              "relevance_score": 1.0912411889623226
+            },
+            {
+              "memory_type": "procedural",
+              "query": "MongoDB connection pool exhausted HTTP 503 remediation runbook",
+              "snippet": "[RUNBOOK] root_cause_family=something success_rate=100% (based on 2 confirmed attempts)\nOrdered fix steps:\n  1. do anything it will work",
+              "memory_id": "85455aa7-7f8e-4d41-819e-1c9590ab9a48",
+              "historical_incident_id": null,
+              "service": null,
+              "timestamp": null,
+              "root_cause_family": "something",
+              "outcome": null,
+              "relevance_score": 0.02441491064589553
+            },
+            {
+              "memory_type": "procedural",
+              "query": "MongoDB connection pool exhausted HTTP 503 remediation runbook",
+              "snippet": "The fix for the runbook for root_cause_family 'something' is to 'do anything it will work'.",
+              "memory_id": "9cb69264-8d75-4d40-96b1-54f05b2e2ce0",
+              "historical_incident_id": null,
+              "service": null,
+              "timestamp": null,
+              "root_cause_family": null,
+              "outcome": null,
+              "relevance_score": 0.015288231488399483
+            },
+            {
+              "memory_type": "procedural",
+              "query": "MongoDB connection pool exhausted HTTP 503 remediation runbook",
+              "snippet": "[RUNBOOK] root_cause_family=something success_rate=100% (based on 2 confirmed attempts)\nOrdered fix steps:\n  1. do anything it will work",
+              "memory_id": "d927d896-9581-4674-bb73-8f21a11acc7a",
+              "historical_incident_id": null,
+              "service": null,
+              "timestamp": null,
+              "root_cause_family": "something",
+              "outcome": null,
+              "relevance_score": 0.0019071257631929526
+            },
+            {
+              "memory_type": "procedural",
+              "query": "MongoDB connection pool exhausted HTTP 503 remediation runbook",
+              "snippet": "[RUNBOOK] root_cause_family=auth_token_expiry success_rate=100% (based on 2 confirmed attempts)\nOrdered fix steps:\n  1. eat and sleep",
+              "memory_id": "12e2988f-bc52-44be-8428-56473d655e53",
+              "historical_incident_id": null,
+              "service": null,
+              "timestamp": "2026-09-28T00:00:00+00:00",
+              "root_cause_family": "auth_token_expiry",
+              "outcome": null,
+              "relevance_score": 0.000408162075650029
+            },
+            {
+              "memory_type": "procedural",
+              "query": "MongoDB connection pool exhausted HTTP 503 remediation runbook",
+              "snippet": "The runbook for root_cause_family 'something' has a 100% success rate based on 2 confirmed attempts.",
+              "memory_id": "5833e27d-4d92-412e-9548-709f66f68b56",
+              "historical_incident_id": null,
+              "service": null,
+              "timestamp": null,
+              "root_cause_family": null,
+              "outcome": null,
+              "relevance_score": 0.00027839856959188756
+            }
+          ],
+          "evidence": [
+            "Similar past incident for 'MongoServerSelectionError connection pool exhausted HTTP 503 Payment API' \u2014 : The Payment API experienced HTTP 503 errors and high latency due to MongoDB connection pool exhaustion caused by unreleased connections; the incident was resolv",
+            "Similar past incident for 'MongoServerSelectionError connection pool exhausted HTTP 503 Payment API' \u2014 historical incident #13 (Payment API), outcome=success: [INCIDENT #13 RESOLVED] service=Payment API root_cause_family=The Payment API was creating MongoDB connections for individual requests without reliably releasin",
+            "Similar past incident for 'MongoServerSelectionError connection pool exhausted HTTP 503 Payment API' \u2014 : The order-service is experiencing intermittent HTTP 503 errors and significant latency increases during peak traffic as of 2026-09-28; the issue is linked to Mo",
+            "Confirmed runbook for 'MongoDB connection pool exhausted HTTP 503 remediation runbook' \u2014 something: [RUNBOOK] root_cause_family=something success_rate=100% (based on 2 confirmed attempts)",
+            "Confirmed runbook for 'MongoDB connection pool exhausted HTTP 503 remediation runbook' \u2014 : The fix for the runbook for root_cause_family 'something' is to 'do anything it will work'.",
+            "Confirmed runbook for 'MongoDB connection pool exhausted HTTP 503 remediation runbook' \u2014 something: [RUNBOOK] root_cause_family=something success_rate=100% (based on 2 confirmed attempts)",
+            "Confirmed runbook for 'MongoDB connection pool exhausted HTTP 503 remediation runbook' \u2014 auth_token_expiry: [RUNBOOK] root_cause_family=auth_token_expiry success_rate=100% (based on 2 confirmed attempts)",
+            "Confirmed runbook for 'MongoDB connection pool exhausted HTTP 503 remediation runbook' \u2014 : The runbook for root_cause_family 'something' has a 100% success rate based on 2 confirmed attempts."
+          ],
+          "memory_trace": [
+            {
+              "tier": "episodic",
+              "query": "MongoServerSelectionError connection pool exhausted HTTP 503 Payment API",
+              "status": "ok",
+              "returned": 5,
+              "accepted": 3,
+              "rejected": 1,
+              "error": null
+            },
+            {
+              "tier": "procedural",
+              "query": "MongoDB connection pool exhausted HTTP 503 remediation runbook",
+              "status": "ok",
+              "returned": 5,
+              "accepted": 5,
+              "rejected": 0,
+              "error": null
+            }
+          ],
+          "memory_status": "ok",
+          "memory_errors": [],
+          "model_used": "openai/gpt-oss-120b",
+          "created_at": "2026-09-28T16:48:01.001207Z"
+        },
+        {
+          "id": 16,
+          "service": "Order API",
+          "symptom": "Order API is intermittently returning HTTP 503 errors with high latency. MongoDB connection utilization: 97%. Logs show 'connection pool exhausted' during peak traffic.",
+          "timestamp": "2026-09-28T16:48:10.932508Z",
+          "status": "diagnosed",
+          "diagnosis_text": "The Order API's intermittent HTTP 503 errors and high latency are likely caused by MongoDB connection pool exhaustion (97% utilization) similar to historical Incident #15 where the Payment API suffered the same symptom. The pattern of exhausted pools during peak traffic points to either a connection leak or an undersized maxPoolSize, leading to request failures.",
+          "memory_hit_type": "episodic",
+          "confidence_pct": 90.0,
+          "predicted_root_cause_family": "db_connection_pool_exhaustion",
+          "root_cause_family": null,
+          "suggested_fix_steps": [
+            "Inspect the Order API code paths handling MongoDB connections to ensure every acquired connection is properly released or returned to the pool.",
+            "Check the current MongoDB driver configuration for maxPoolSize; compare against observed peak connection counts.",
+            "If the pool size is insufficient, increase maxPoolSize (e.g., from 50 to 100) after confirming database capacity.",
+            "Restart the Order API instances to clear any currently exhausted connection pools.",
+            "Monitor MongoDB connection utilization and HTTP 503 rate for at least 15 minutes post\u2011restart to verify the issue is resolved."
+          ],
+          "fix_steps": [],
+          "outcome": null,
+          "memory_hits": [
+            {
+              "memory_type": "episodic",
+              "query": "Order API HTTP 503 MongoDB connection pool exhausted",
+              "snippet": "The Payment API experienced HTTP 503 errors and high latency due to MongoDB connection pool exhaustion caused by unreleased connections; the incident was resolved on 2026-09-28 by updating connection handling, increasing maxPoolSize from 50 to 100, and restarting instances, resulting in 0% error rate and P95 latency improvement to 280ms.",
+              "memory_id": "bf7685fe-c034-4f3a-8fac-fc710c899928",
+              "historical_incident_id": null,
+              "service": null,
+              "timestamp": "2026-09-27T18:50:32.040941+00:00",
+              "root_cause_family": null,
+              "outcome": null,
+              "relevance_score": 1.124325620856634
+            },
+            {
+              "memory_type": "episodic",
+              "query": "Order API HTTP 503 MongoDB connection pool exhausted",
+              "snippet": "The order-service is experiencing intermittent HTTP 503 errors and significant latency increases during peak traffic as of 2026-09-28; the issue is linked to MongoDB connection pool exhaustion (97% utilization), and restarting API instances provides temporary relief.",
+              "memory_id": "b48b32b6-da8e-43dd-a5ac-a7de214cd6c7",
+              "historical_incident_id": null,
+              "service": null,
+              "timestamp": "2026-09-28T02:56:40.095726+00:00",
+              "root_cause_family": null,
+              "outcome": null,
+              "relevance_score": 1.1079712088190137
+            },
+            {
+              "memory_type": "episodic",
+              "query": "Order API HTTP 503 MongoDB connection pool exhausted",
+              "snippet": "[HISTORICAL INCIDENT #15 RESOLVED] service=Payment API occurred_at=2026-09-28T16:48:01.000467+00:00 status=resolved outcome=success root_cause_family=db_connection_pool_exhaustion\nReported symptoms (the evidence this incident was diagnosed from):\nPayment API is returning HTTP 503 errors with high latency. Logs show 'MongoServerSelectionError: connection pool exhausted' and MongoDB connection utilization at maximum.\nConfirmed root cause family: db_connection_pool_exhaustion\nAgent predicted root cause (unconfirmed): mongo_connection_pool_exhaustion\nConfirmed fix steps (engineer-verified):\n  1. I \u2026",
+              "memory_id": "d7cefbfb-b164-49e2-b1eb-223b2fd07fa7",
+              "historical_incident_id": 15,
+              "service": "Payment API",
+              "timestamp": "2026-09-28T16:48:01.000467+00:00",
+              "root_cause_family": "db_connection_pool_exhaustion",
+              "outcome": "success",
+              "relevance_score": 1.094167855
+            },
+            {
+              "memory_type": "episodic",
+              "query": "Order API HTTP 503 MongoDB connection pool exhausted",
+              "snippet": "[INCIDENT #13 RESOLVED] service=Payment API root_cause_family=The Payment API was creating MongoDB connections for individual requests without reliably releasing them. Over time, the number of active connections increased until the MongoDB connection pool reached its maximum limit. New requests could not obtain a database connection, resulting in HTTP 503 errors and increased latency. outcome=success\nConfirmed fix steps:\n  1. 1. Updated the MongoDB connection handling so that connections are properly reused and released.\n  2. 2. Changed the connection pool configuration from maxPoolSize=50 to  \u2026",
+              "memory_id": "2a49d74f-78f7-4a9c-9ceb-9460af122dda",
+              "historical_incident_id": 13,
+              "service": "Payment API",
+              "timestamp": "2026-09-28T00:00:00+00:00",
+              "root_cause_family": "The Payment API was creating MongoDB connections for individual requests without reliably releasing them. Over time, the number of active connections increased until the MongoDB connection pool reached its maximum limit. New requests could not obtain a database connection, resulting in HTTP 503 errors and increased latency.",
+              "outcome": "success",
+              "relevance_score": 1.0937421369970868
+            }
+          ],
+          "evidence": [
+            "Similar past incident for 'Order API HTTP 503 MongoDB connection pool exhausted' \u2014 : The Payment API experienced HTTP 503 errors and high latency due to MongoDB connection pool exhaustion caused by unreleased connections; the incident was resolv",
+            "Similar past incident for 'Order API HTTP 503 MongoDB connection pool exhausted' \u2014 : The order-service is experiencing intermittent HTTP 503 errors and significant latency increases during peak traffic as of 2026-09-28; the issue is linked to Mo",
+            "Similar past incident for 'Order API HTTP 503 MongoDB connection pool exhausted' \u2014 historical incident #15 (Payment API), outcome=success: [HISTORICAL INCIDENT #15 RESOLVED] service=Payment API occurred_at=2026-09-28T16:48:01.000467+00:00 status=resolved outcome=success root_cause_family=db_connect",
+            "Similar past incident for 'Order API HTTP 503 MongoDB connection pool exhausted' \u2014 historical incident #13 (Payment API), outcome=success: [INCIDENT #13 RESOLVED] service=Payment API root_cause_family=The Payment API was creating MongoDB connections for individual requests without reliably releasin"
+          ],
+          "memory_trace": [
+            {
+              "tier": "episodic",
+              "query": "Order API HTTP 503 MongoDB connection pool exhausted",
+              "status": "ok",
+              "returned": 5,
+              "accepted": 4,
+              "rejected": 0,
+              "error": null
+            },
+            {
+              "tier": "semantic",
+              "query": "HTTP 503 MongoDB connection pool exhaustion",
+              "status": "ok",
+              "returned": 0,
+              "accepted": 0,
+              "rejected": 0,
+              "error": null
+            }
+          ],
+          "memory_status": "ok",
+          "memory_errors": [],
+          "model_used": "openai/gpt-oss-120b",
+          "created_at": "2026-09-28T16:48:10.933055Z"
+        },
+        {
+          "id": 17,
+          "service": "Payment API",
+          "symptom": "Payment API is returning HTTP 503 errors with high latency. Logs show 'MongoServerSelectionError: connection pool exhausted' and MongoDB connection utilization at maximum.",
+          "timestamp": "2026-09-28T16:53:39.909769Z",
+          "status": "resolved",
+          "diagnosis_text": "The Payment API is likely suffering from MongoDB connection pool exhaustion, causing HTTP 503 responses and high latency. Current logs show 'MongoServerSelectionError: connection pool exhausted' and maxed-out connection utilization, matching historical incident #15 where the root cause was confirmed as db_connection_pool_exhaustion. Given the identical symptom pattern, we have high confidence in this hypothesis.",
+          "memory_hit_type": "episodic",
+          "confidence_pct": 95.0,
+          "predicted_root_cause_family": "db_connection_pool_exhaustion",
+          "root_cause_family": "db_connection_pool_exhaustion",
+          "suggested_fix_steps": [
+            "Identify code paths in the Payment API that acquire MongoDB connections without guaranteed release (e.g., missing finally/using blocks).",
+            "Modify the code to ensure every acquired connection is properly released back to the pool, preferably by using a connection manager or context pattern.",
+            "Temporarily restart the Payment API instances to clear the exhausted connection pool.",
+            "Increase the MongoDB driver maxPoolSize setting after confirming the database can handle the higher limit.",
+            "Deploy the updated code and monitor MongoDB connection utilization and HTTP 503 rate for at least 30 minutes."
+          ],
+          "fix_steps": [
+            "Identify code paths leaking MongoDB connections",
+            "Fix connection reuse so every acquired connection is released",
+            "Increase maxPoolSize after verifying database capacity",
+            "Monitor connection pool utilization and HTTP 503 rate"
+          ],
+          "outcome": "success",
+          "memory_hits": [
+            {
+              "memory_type": "episodic",
+              "query": "Payment API HTTP 503 MongoServerSelectionError connection pool exhausted",
+              "snippet": "[HISTORICAL INCIDENT #15 RESOLVED] service=Payment API occurred_at=2026-09-28T16:48:01.000467+00:00 status=resolved outcome=success root_cause_family=db_connection_pool_exhaustion\nReported symptoms (the evidence this incident was diagnosed from):\nPayment API is returning HTTP 503 errors with high latency. Logs show 'MongoServerSelectionError: connection pool exhausted' and MongoDB connection utilization at maximum.\nConfirmed root cause family: db_connection_pool_exhaustion\nAgent predicted root cause (unconfirmed): mongo_connection_pool_exhaustion\nConfirmed fix steps (engineer-verified):\n  1. I \u2026",
+              "memory_id": "d7cefbfb-b164-49e2-b1eb-223b2fd07fa7",
+              "historical_incident_id": 15,
+              "service": "Payment API",
+              "timestamp": "2026-09-28T16:48:01.000467+00:00",
+              "root_cause_family": "db_connection_pool_exhaustion",
+              "outcome": "success",
+              "relevance_score": 1.0992571479172306
+            },
+            {
+              "memory_type": "episodic",
+              "query": "Payment API HTTP 503 MongoServerSelectionError connection pool exhausted",
+              "snippet": "[INCIDENT #13 RESOLVED] service=Payment API root_cause_family=The Payment API was creating MongoDB connections for individual requests without reliably releasing them. Over time, the number of active connections increased until the MongoDB connection pool reached its maximum limit. New requests could not obtain a database connection, resulting in HTTP 503 errors and increased latency. outcome=success\nConfirmed fix steps:\n  1. 1. Updated the MongoDB connection handling so that connections are properly reused and released.\n  2. 2. Changed the connection pool configuration from maxPoolSize=50 to  \u2026",
+              "memory_id": "2a49d74f-78f7-4a9c-9ceb-9460af122dda",
+              "historical_incident_id": 13,
+              "service": "Payment API",
+              "timestamp": "2026-09-28T00:00:00+00:00",
+              "root_cause_family": "The Payment API was creating MongoDB connections for individual requests without reliably releasing them. Over time, the number of active connections increased until the MongoDB connection pool reached its maximum limit. New requests could not obtain a database connection, resulting in HTTP 503 errors and increased latency.",
+              "outcome": "success",
+              "relevance_score": 1.0985067539929305
+            }
+          ],
+          "evidence": [
+            "Similar past incident for 'Payment API HTTP 503 MongoServerSelectionError connection pool exhausted' \u2014 historical incident #15 (Payment API), outcome=success: [HISTORICAL INCIDENT #15 RESOLVED] service=Payment API occurred_at=2026-09-28T16:48:01.000467+00:00 status=resolved outcome=success root_cause_family=db_connect",
+            "Similar past incident for 'Payment API HTTP 503 MongoServerSelectionError connection pool exhausted' \u2014 historical incident #13 (Payment API), outcome=success: [INCIDENT #13 RESOLVED] service=Payment API root_cause_family=The Payment API was creating MongoDB connections for individual requests without reliably releasin"
+          ],
+          "memory_trace": [
+            {
+              "tier": "episodic",
+              "query": "Payment API HTTP 503 MongoServerSelectionError connection pool exhausted",
+              "status": "ok",
+              "returned": 5,
+              "accepted": 2,
+              "rejected": 2,
+              "error": null
+            }
+          ],
+          "memory_status": "ok",
+          "memory_errors": [],
+          "model_used": "openai/gpt-oss-120b",
+          "created_at": "2026-09-28T16:53:39.911391Z"
+        },
+        {
+          "id": 18,
+          "service": "Order API",
+          "symptom": "Order API is intermittently returning HTTP 503 errors with high latency. MongoDB connection utilization: 97%. Logs show 'connection pool exhausted' during peak traffic.",
+          "timestamp": "2026-09-28T16:53:51.110802Z",
+          "status": "diagnosed",
+          "diagnosis_text": "The Order API is likely suffering from MongoDB connection pool exhaustion (db_connection_pool_exhaustion). Evidence: intermittent HTTP 503 responses, latency spikes, MongoDB connection utilization at 97%, and logs explicitly reporting \"connection pool exhausted\" during peak traffic. This mirrors historical Incident #15 on the Payment API, which was resolved by fixing connection leaks and adjusting pool size.",
+          "memory_hit_type": "episodic",
+          "confidence_pct": 90.0,
+          "predicted_root_cause_family": "db_connection_pool_exhaustion",
+          "root_cause_family": null,
+          "suggested_fix_steps": [
+            "Inspect the Order API code for any request handling paths that acquire MongoDB connections without guaranteed release (e.g., missing finally/using blocks).",
+            "Add or correct connection handling to ensure every acquired connection is returned to the pool (use connection pooling libraries correctly).",
+            "Increase the MongoDB driver maxPoolSize setting after confirming the database can handle the higher limit.",
+            "Restart the Order API service instances to clear the currently exhausted connection pools.",
+            "Monitor MongoDB connection utilization and HTTP 503 rate for at least 30 minutes post\u2011restart to verify the issue is resolved."
+          ],
+          "fix_steps": [],
+          "outcome": null,
+          "memory_hits": [
+            {
+              "memory_type": "episodic",
+              "query": "Order API HTTP 503 MongoDB connection pool exhausted",
+              "snippet": "[HISTORICAL INCIDENT #15 RESOLVED] service=Payment API occurred_at=2026-09-28T16:48:01.000467+00:00 status=resolved outcome=success root_cause_family=db_connection_pool_exhaustion\nReported symptoms (the evidence this incident was diagnosed from):\nPayment API is returning HTTP 503 errors with high latency. Logs show 'MongoServerSelectionError: connection pool exhausted' and MongoDB connection utilization at maximum.\nConfirmed root cause family: db_connection_pool_exhaustion\nAgent predicted root cause (unconfirmed): mongo_connection_pool_exhaustion\nConfirmed fix steps (engineer-verified):\n  1. I \u2026",
+              "memory_id": "d7cefbfb-b164-49e2-b1eb-223b2fd07fa7",
+              "historical_incident_id": 15,
+              "service": "Payment API",
+              "timestamp": "2026-09-28T16:48:01.000467+00:00",
+              "root_cause_family": "db_connection_pool_exhaustion",
+              "outcome": "success",
+              "relevance_score": 1.0941668417437598
+            },
+            {
+              "memory_type": "episodic",
+              "query": "Order API HTTP 503 MongoDB connection pool exhausted",
+              "snippet": "[INCIDENT #13 RESOLVED] service=Payment API root_cause_family=The Payment API was creating MongoDB connections for individual requests without reliably releasing them. Over time, the number of active connections increased until the MongoDB connection pool reached its maximum limit. New requests could not obtain a database connection, resulting in HTTP 503 errors and increased latency. outcome=success\nConfirmed fix steps:\n  1. 1. Updated the MongoDB connection handling so that connections are properly reused and released.\n  2. 2. Changed the connection pool configuration from maxPoolSize=50 to  \u2026",
+              "memory_id": "2a49d74f-78f7-4a9c-9ceb-9460af122dda",
+              "historical_incident_id": 13,
+              "service": "Payment API",
+              "timestamp": "2026-09-28T00:00:00+00:00",
+              "root_cause_family": "The Payment API was creating MongoDB connections for individual requests without reliably releasing them. Over time, the number of active connections increased until the MongoDB connection pool reached its maximum limit. New requests could not obtain a database connection, resulting in HTTP 503 errors and increased latency.",
+              "outcome": "success",
+              "relevance_score": 1.0937399482775012
+            }
+          ],
+          "evidence": [
+            "Similar past incident for 'Order API HTTP 503 MongoDB connection pool exhausted' \u2014 historical incident #15 (Payment API), outcome=success: [HISTORICAL INCIDENT #15 RESOLVED] service=Payment API occurred_at=2026-09-28T16:48:01.000467+00:00 status=resolved outcome=success root_cause_family=db_connect",
+            "Similar past incident for 'Order API HTTP 503 MongoDB connection pool exhausted' \u2014 historical incident #13 (Payment API), outcome=success: [INCIDENT #13 RESOLVED] service=Payment API root_cause_family=The Payment API was creating MongoDB connections for individual requests without reliably releasin"
+          ],
+          "memory_trace": [
+            {
+              "tier": "episodic",
+              "query": "Order API HTTP 503 MongoDB connection pool exhausted",
+              "status": "ok",
+              "returned": 5,
+              "accepted": 2,
+              "rejected": 3,
+              "error": null
+            },
+            {
+              "tier": "semantic",
+              "query": "HTTP 503 MongoDB connection pool exhausted",
+              "status": "ok",
+              "returned": 0,
+              "accepted": 0,
+              "rejected": 0,
+              "error": null
+            }
+          ],
+          "memory_status": "ok",
+          "memory_errors": [],
+          "model_used": "openai/gpt-oss-120b",
+          "created_at": "2026-09-28T16:53:51.111898Z"
+        },
+        {
+          "id": 19,
+          "service": "Payment API",
+          "symptom": "Payment API is returning HTTP 503 errors with high latency. Logs show 'MongoServerSelectionError: connection pool exhausted' and MongoDB connection utilization at maximum.",
+          "timestamp": "2026-09-28T16:54:34.931804Z",
+          "status": "diagnosed",
+          "diagnosis_text": "The Payment API is likely suffering from MongoDB connection pool exhaustion: connections are not being released/reused, causing the pool to hit its max limit, which leads to MongoServerSelectionError and HTTP 503 responses with high latency. This matches historical Incident #15 (and #13) where the same symptom pattern was traced to unreleased DB connections.",
+          "memory_hit_type": "episodic",
+          "confidence_pct": 95.0,
+          "predicted_root_cause_family": "db_connection_pool_exhaustion",
+          "root_cause_family": null,
+          "suggested_fix_steps": [
+            "Identify code paths in the Payment API that acquire MongoDB connections without guaranteeing release (e.g., missing finally/await close).",
+            "Modify the code to use a connection pool correctly: acquire connections from the pool and ensure they are released in all execution paths (use try/finally or with\u2011style helpers).",
+            "Increase the MongoDB maxPoolSize (e.g., from 50 to 100) after confirming the database can handle the higher limit.",
+            "Restart the Payment API instances to clear the exhausted connection pool.",
+            "Verify that MongoDB connection utilization drops below the max threshold and that HTTP 503 error rate returns to zero.",
+            "Monitor latency and connection pool metrics for at least 30 minutes to confirm stability."
+          ],
+          "fix_steps": [],
+          "outcome": null,
+          "memory_hits": [
+            {
+              "memory_type": "episodic",
+              "query": "MongoServerSelectionError connection pool exhausted HTTP 503 Payment API",
+              "snippet": "[INCIDENT #13 RESOLVED] service=Payment API root_cause_family=The Payment API was creating MongoDB connections for individual requests without reliably releasing them. Over time, the number of active connections increased until the MongoDB connection pool reached its maximum limit. New requests could not obtain a database connection, resulting in HTTP 503 errors and increased latency. outcome=success\nConfirmed fix steps:\n  1. 1. Updated the MongoDB connection handling so that connections are properly reused and released.\n  2. 2. Changed the connection pool configuration from maxPoolSize=50 to  \u2026",
+              "memory_id": "2a49d74f-78f7-4a9c-9ceb-9460af122dda",
+              "historical_incident_id": 13,
+              "service": "Payment API",
+              "timestamp": "2026-09-28T00:00:00+00:00",
+              "root_cause_family": "The Payment API was creating MongoDB connections for individual requests without reliably releasing them. Over time, the number of active connections increased until the MongoDB connection pool reached its maximum limit. New requests could not obtain a database connection, resulting in HTTP 503 errors and increased latency.",
+              "outcome": "success",
+              "relevance_score": 1.0967326409301419
+            },
+            {
+              "memory_type": "episodic",
+              "query": "MongoServerSelectionError connection pool exhausted HTTP 503 Payment API",
+              "snippet": "[HISTORICAL INCIDENT #15 RESOLVED] service=Payment API occurred_at=2026-09-28T16:48:01.000467+00:00 status=resolved outcome=success root_cause_family=db_connection_pool_exhaustion\nReported symptoms (the evidence this incident was diagnosed from):\nPayment API is returning HTTP 503 errors with high latency. Logs show 'MongoServerSelectionError: connection pool exhausted' and MongoDB connection utilization at maximum.\nConfirmed root cause family: db_connection_pool_exhaustion\nAgent predicted root cause (unconfirmed): mongo_connection_pool_exhaustion\nConfirmed fix steps (engineer-verified):\n  1. I \u2026",
+              "memory_id": "d7cefbfb-b164-49e2-b1eb-223b2fd07fa7",
+              "historical_incident_id": 15,
+              "service": "Payment API",
+              "timestamp": "2026-09-28T16:48:01.000467+00:00",
+              "root_cause_family": "db_connection_pool_exhaustion",
+              "outcome": "success",
+              "relevance_score": 1.0961370295541104
+            }
+          ],
+          "evidence": [
+            "Similar past incident for 'MongoServerSelectionError connection pool exhausted HTTP 503 Payment API' \u2014 historical incident #13 (Payment API), outcome=success: [INCIDENT #13 RESOLVED] service=Payment API root_cause_family=The Payment API was creating MongoDB connections for individual requests without reliably releasin",
+            "Similar past incident for 'MongoServerSelectionError connection pool exhausted HTTP 503 Payment API' \u2014 historical incident #15 (Payment API), outcome=success: [HISTORICAL INCIDENT #15 RESOLVED] service=Payment API occurred_at=2026-09-28T16:48:01.000467+00:00 status=resolved outcome=success root_cause_family=db_connect"
+          ],
+          "memory_trace": [
+            {
+              "tier": "episodic",
+              "query": "MongoServerSelectionError connection pool exhausted HTTP 503 Payment API",
+              "status": "ok",
+              "returned": 5,
+              "accepted": 2,
+              "rejected": 2,
+              "error": null
+            }
+          ],
+          "memory_status": "ok",
+          "memory_errors": [],
+          "model_used": "openai/gpt-oss-120b",
+          "created_at": "2026-09-28T16:54:34.932613Z"
+        },
+        {
+          "id": 20,
+          "service": "Payment API",
+          "symptom": "Payment API is returning HTTP 503 errors with high latency. Logs show 'MongoServerSelectionError: connection pool exhausted' and MongoDB connection utilization at maximum.",
+          "timestamp": "2026-09-28T16:55:02.344632Z",
+          "status": "resolved",
+          "diagnosis_text": "The Payment API is likely suffering from a MongoDB connection pool exhaustion (root\u2011cause family: db_connection_pool_exhaustion). Evidence: HTTP 503 responses, high latency, logs showing 'MongoServerSelectionError: connection pool exhausted', and MongoDB connection utilization at its maximum. This matches historical incidents #13 and #15 and the documented runbook for the same failure pattern, indicating leaked or unreleased connections filling the pool.",
+          "memory_hit_type": "procedural",
+          "confidence_pct": 95.0,
+          "predicted_root_cause_family": "db_connection_pool_exhaustion",
+          "root_cause_family": "db_connection_pool_exhaustion",
+          "suggested_fix_steps": [
+            "Identify code paths that may be leaking MongoDB connections (review recent changes, add connection\u2011acquire/release logging).",
+            "Fix connection handling so every acquired connection is properly released back to the pool (use try/finally or connection\u2011pool APIs).",
+            "Increase the MongoDB maxPoolSize configuration after confirming the database can handle the higher limit.",
+            "Restart the affected Payment API instances to clear any currently exhausted pools.",
+            "Monitor MongoDB connection pool utilization and HTTP 503 rate to confirm the issue is resolved."
+          ],
+          "fix_steps": [
+            "Identify code paths leaking MongoDB connections",
+            "Fix connection reuse so every acquired connection is released",
+            "Increase maxPoolSize after verifying database capacity",
+            "Monitor connection pool utilization and HTTP 503 rate"
+          ],
+          "outcome": "success",
+          "memory_hits": [
+            {
+              "memory_type": "episodic",
+              "query": "MongoServerSelectionError connection pool exhausted HTTP 503 Payment API",
+              "snippet": "[INCIDENT #13 RESOLVED] service=Payment API root_cause_family=The Payment API was creating MongoDB connections for individual requests without reliably releasing them. Over time, the number of active connections increased until the MongoDB connection pool reached its maximum limit. New requests could not obtain a database connection, resulting in HTTP 503 errors and increased latency. outcome=success\nConfirmed fix steps:\n  1. 1. Updated the MongoDB connection handling so that connections are properly reused and released.\n  2. 2. Changed the connection pool configuration from maxPoolSize=50 to  \u2026",
+              "memory_id": "2a49d74f-78f7-4a9c-9ceb-9460af122dda",
+              "historical_incident_id": 13,
+              "service": "Payment API",
+              "timestamp": "2026-09-28T00:00:00+00:00",
+              "root_cause_family": "The Payment API was creating MongoDB connections for individual requests without reliably releasing them. Over time, the number of active connections increased until the MongoDB connection pool reached its maximum limit. New requests could not obtain a database connection, resulting in HTTP 503 errors and increased latency.",
+              "outcome": "success",
+              "relevance_score": 1.096721179708553
+            },
+            {
+              "memory_type": "episodic",
+              "query": "MongoServerSelectionError connection pool exhausted HTTP 503 Payment API",
+              "snippet": "[HISTORICAL INCIDENT #15 RESOLVED] service=Payment API occurred_at=2026-09-28T16:48:01.000467+00:00 status=resolved outcome=success root_cause_family=db_connection_pool_exhaustion\nReported symptoms (the evidence this incident was diagnosed from):\nPayment API is returning HTTP 503 errors with high latency. Logs show 'MongoServerSelectionError: connection pool exhausted' and MongoDB connection utilization at maximum.\nConfirmed root cause family: db_connection_pool_exhaustion\nAgent predicted root cause (unconfirmed): mongo_connection_pool_exhaustion\nConfirmed fix steps (engineer-verified):\n  1. I \u2026",
+              "memory_id": "d7cefbfb-b164-49e2-b1eb-223b2fd07fa7",
+              "historical_incident_id": 15,
+              "service": "Payment API",
+              "timestamp": "2026-09-28T16:48:01.000467+00:00",
+              "root_cause_family": "db_connection_pool_exhaustion",
+              "outcome": "success",
+              "relevance_score": 1.0961368505420916
+            },
+            {
+              "memory_type": "procedural",
+              "query": "MongoDB connection pool exhausted HTTP 503 Payment API runbook",
+              "snippet": "[RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)\nOrdered fix steps:\n  1. Identify code paths leaking MongoDB connections\n  2. Fix connection reuse so every acquired connection is released\n  3. Increase maxPoolSize after verifying database capacity\n  4. Monitor connection pool utilization and HTTP 503 rate",
+              "memory_id": "7636f6e5-953a-45a0-96ef-f1fee1a5a04b",
+              "historical_incident_id": null,
+              "service": null,
+              "timestamp": null,
+              "root_cause_family": "db_connection_pool_exhaustion",
+              "outcome": "success",
+              "relevance_score": 1.0406008793779806
+            },
+            {
+              "memory_type": "procedural",
+              "query": "MongoDB connection pool exhausted HTTP 503 Payment API runbook",
+              "snippet": "The runbook for resolving database connection pool exhaustion involves identifying MongoDB connection leaks, fixing connection reuse, increasing maxPoolSize, and monitoring pool utilization.",
+              "memory_id": "5499c238-873c-4d92-988e-30e8993a20b5",
+              "historical_incident_id": null,
+              "service": null,
+              "timestamp": null,
+              "root_cause_family": null,
+              "outcome": null,
+              "relevance_score": 1.0406008793779806
+            },
+            {
+              "memory_type": "procedural",
+              "query": "MongoDB connection pool exhausted HTTP 503 Payment API runbook",
+              "snippet": "[RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)\nOrdered fix steps:\n  1. Identify code paths leaking MongoDB connections\n  2. Fix connection reuse so every acquired connection is released\n  3. Increase maxPoolSize after verifying database capacity\n  4. Monitor connection pool utilization and HTTP 503 rate",
+              "memory_id": "5a9826da-b8b7-4c60-b619-3bec27fc18e9",
+              "historical_incident_id": null,
+              "service": null,
+              "timestamp": "2026-09-28T00:00:00+00:00",
+              "root_cause_family": "db_connection_pool_exhaustion",
+              "outcome": "success",
+              "relevance_score": 0.17450360852305996
+            },
+            {
+              "memory_type": "procedural",
+              "query": "MongoDB connection pool exhausted HTTP 503 Payment API runbook",
+              "snippet": "The root cause of the issue on 2026-09-28 was identified as database connection pool exhaustion.",
+              "memory_id": "b4b78710-fb03-4d42-a582-e3d26146ba7c",
+              "historical_incident_id": null,
+              "service": null,
+              "timestamp": "2026-09-28T00:00:00+00:00",
+              "root_cause_family": null,
+              "outcome": null,
+              "relevance_score": 0.14132816953010027
+            },
+            {
+              "memory_type": "procedural",
+              "query": "MongoDB connection pool exhausted HTTP 503 Payment API runbook",
+              "snippet": "[RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)\nOrdered fix steps:\n  1. Identify code paths leaking MongoDB connections\n  2. Fix connection reuse so every acquired connection is released\n  3. Increase maxPoolSize after verifying database capacity\n  4. Monitor connection pool utilization and HTTP 503 rate",
+              "memory_id": "399673db-8890-47d5-94ad-15b2482f8d18",
+              "historical_incident_id": null,
+              "service": null,
+              "timestamp": "2026-09-28T00:00:00.020000+00:00",
+              "root_cause_family": "db_connection_pool_exhaustion",
+              "outcome": "success",
+              "relevance_score": 0.08570144611189759
+            }
+          ],
+          "evidence": [
+            "Similar past incident for 'MongoServerSelectionError connection pool exhausted HTTP 503 Payment API' \u2014 historical incident #13 (Payment API), outcome=success: [INCIDENT #13 RESOLVED] service=Payment API root_cause_family=The Payment API was creating MongoDB connections for individual requests without reliably releasin",
+            "Similar past incident for 'MongoServerSelectionError connection pool exhausted HTTP 503 Payment API' \u2014 historical incident #15 (Payment API), outcome=success: [HISTORICAL INCIDENT #15 RESOLVED] service=Payment API occurred_at=2026-09-28T16:48:01.000467+00:00 status=resolved outcome=success root_cause_family=db_connect",
+            "Confirmed runbook for 'MongoDB connection pool exhausted HTTP 503 Payment API runbook' \u2014 db_connection_pool_exhaustion: [RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)",
+            "Confirmed runbook for 'MongoDB connection pool exhausted HTTP 503 Payment API runbook' \u2014 : The runbook for resolving database connection pool exhaustion involves identifying MongoDB connection leaks, fixing connection reuse, increasing maxPoolSize, an",
+            "Confirmed runbook for 'MongoDB connection pool exhausted HTTP 503 Payment API runbook' \u2014 db_connection_pool_exhaustion: [RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)",
+            "Confirmed runbook for 'MongoDB connection pool exhausted HTTP 503 Payment API runbook' \u2014 : The root cause of the issue on 2026-09-28 was identified as database connection pool exhaustion.",
+            "Confirmed runbook for 'MongoDB connection pool exhausted HTTP 503 Payment API runbook' \u2014 db_connection_pool_exhaustion: [RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)"
+          ],
+          "memory_trace": [
+            {
+              "tier": "episodic",
+              "query": "MongoServerSelectionError connection pool exhausted HTTP 503 Payment API",
+              "status": "ok",
+              "returned": 5,
+              "accepted": 2,
+              "rejected": 2,
+              "error": null
+            },
+            {
+              "tier": "procedural",
+              "query": "MongoDB connection pool exhausted HTTP 503 Payment API runbook",
+              "status": "ok",
+              "returned": 5,
+              "accepted": 5,
+              "rejected": 0,
+              "error": null
+            }
+          ],
+          "memory_status": "ok",
+          "memory_errors": [],
+          "model_used": "openai/gpt-oss-120b",
+          "created_at": "2026-09-28T16:55:02.345895Z"
+        },
+        {
+          "id": 21,
+          "service": "Order API",
+          "symptom": "Order API is intermittently returning HTTP 503 errors with high latency. MongoDB connection utilization: 97%. Logs show 'connection pool exhausted' during peak traffic.",
+          "timestamp": "2026-09-28T16:55:16.044495Z",
+          "status": "diagnosed",
+          "diagnosis_text": "The Order API 503s and high latency are likely caused by MongoDB connection pool exhaustion (connection utilization at 97% and logs showing 'connection pool exhausted'). This mirrors historical Incident #15 on the Payment API, which was confirmed to be a db_connection_pool_exhaustion problem.",
+          "memory_hit_type": "procedural",
+          "confidence_pct": 92.0,
+          "predicted_root_cause_family": "db_connection_pool_exhaustion",
+          "root_cause_family": null,
+          "suggested_fix_steps": [
+            "Identify code paths in the Order API that may be leaking or not releasing MongoDB connections (review recent deployments, add logging around acquire/release).",
+            "Fix the connection reuse logic so every acquired connection is properly released/closed after use.",
+            "Increase the MongoDB driver maxPoolSize setting after confirming the database can handle the higher limit.",
+            "Redeploy the updated Order API and monitor connection pool utilization and HTTP 503 rate to confirm the issue is resolved."
+          ],
+          "fix_steps": [],
+          "outcome": null,
+          "memory_hits": [
+            {
+              "memory_type": "episodic",
+              "query": "Order API HTTP 503 MongoDB connection pool exhausted",
+              "snippet": "[HISTORICAL INCIDENT #15 RESOLVED] service=Payment API occurred_at=2026-09-28T16:48:01.000467+00:00 status=resolved outcome=success root_cause_family=db_connection_pool_exhaustion\nReported symptoms (the evidence this incident was diagnosed from):\nPayment API is returning HTTP 503 errors with high latency. Logs show 'MongoServerSelectionError: connection pool exhausted' and MongoDB connection utilization at maximum.\nConfirmed root cause family: db_connection_pool_exhaustion\nAgent predicted root cause (unconfirmed): mongo_connection_pool_exhaustion\nConfirmed fix steps (engineer-verified):\n  1. I \u2026",
+              "memory_id": "d7cefbfb-b164-49e2-b1eb-223b2fd07fa7",
+              "historical_incident_id": 15,
+              "service": "Payment API",
+              "timestamp": "2026-09-28T16:48:01.000467+00:00",
+              "root_cause_family": "db_connection_pool_exhaustion",
+              "outcome": "success",
+              "relevance_score": 1.094166347544883
+            },
+            {
+              "memory_type": "procedural",
+              "query": "MongoDB connection pool exhausted",
+              "snippet": "The runbook for resolving database connection pool exhaustion involves identifying MongoDB connection leaks, fixing connection reuse, increasing maxPoolSize, and monitoring pool utilization.",
+              "memory_id": "5499c238-873c-4d92-988e-30e8993a20b5",
+              "historical_incident_id": null,
+              "service": null,
+              "timestamp": null,
+              "root_cause_family": null,
+              "outcome": null,
+              "relevance_score": 1.1025188680511566
+            },
+            {
+              "memory_type": "procedural",
+              "query": "MongoDB connection pool exhausted",
+              "snippet": "[RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 3 confirmed attempts)\nOrdered fix steps:\n  1. Identify code paths leaking MongoDB connections\n  2. Fix connection reuse so every acquired connection is released\n  3. Increase maxPoolSize after verifying database capacity\n  4. Monitor connection pool utilization and HTTP 503 rate",
+              "memory_id": "7a7acfff-0920-4343-b558-0e8e994908f0",
+              "historical_incident_id": null,
+              "service": null,
+              "timestamp": null,
+              "root_cause_family": "db_connection_pool_exhaustion",
+              "outcome": "success",
+              "relevance_score": 1.0973839687158908
+            },
+            {
+              "memory_type": "procedural",
+              "query": "MongoDB connection pool exhausted",
+              "snippet": "[RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)\nOrdered fix steps:\n  1. Identify code paths leaking MongoDB connections\n  2. Fix connection reuse so every acquired connection is released\n  3. Increase maxPoolSize after verifying database capacity\n  4. Monitor connection pool utilization and HTTP 503 rate",
+              "memory_id": "7636f6e5-953a-45a0-96ef-f1fee1a5a04b",
+              "historical_incident_id": null,
+              "service": null,
+              "timestamp": null,
+              "root_cause_family": "db_connection_pool_exhaustion",
+              "outcome": "success",
+              "relevance_score": 1.0949288613421198
+            },
+            {
+              "memory_type": "procedural",
+              "query": "MongoDB connection pool exhausted",
+              "snippet": "[RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)\nOrdered fix steps:\n  1. Identify code paths leaking MongoDB connections\n  2. Fix connection reuse so every acquired connection is released\n  3. Increase maxPoolSize after verifying database capacity\n  4. Monitor connection pool utilization and HTTP 503 rate",
+              "memory_id": "399673db-8890-47d5-94ad-15b2482f8d18",
+              "historical_incident_id": null,
+              "service": null,
+              "timestamp": "2026-09-28T00:00:00.020000+00:00",
+              "root_cause_family": "db_connection_pool_exhaustion",
+              "outcome": "success",
+              "relevance_score": 0.978139123900864
+            },
+            {
+              "memory_type": "procedural",
+              "query": "MongoDB connection pool exhausted",
+              "snippet": "The resolution process for the database connection pool exhaustion on 2026-09-28 was successful after 3 attempts.",
+              "memory_id": "d938c232-0982-42b9-8c4f-7098874a79a7",
+              "historical_incident_id": null,
+              "service": null,
+              "timestamp": "2026-09-28T00:00:00.020000+00:00",
+              "root_cause_family": null,
+              "outcome": null,
+              "relevance_score": 0.9770566895026809
+            }
+          ],
+          "evidence": [
+            "Similar past incident for 'Order API HTTP 503 MongoDB connection pool exhausted' \u2014 historical incident #15 (Payment API), outcome=success: [HISTORICAL INCIDENT #15 RESOLVED] service=Payment API occurred_at=2026-09-28T16:48:01.000467+00:00 status=resolved outcome=success root_cause_family=db_connect",
+            "Confirmed runbook for 'MongoDB connection pool exhausted' \u2014 : The runbook for resolving database connection pool exhaustion involves identifying MongoDB connection leaks, fixing connection reuse, increasing maxPoolSize, an",
+            "Confirmed runbook for 'MongoDB connection pool exhausted' \u2014 db_connection_pool_exhaustion: [RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 3 confirmed attempts)",
+            "Confirmed runbook for 'MongoDB connection pool exhausted' \u2014 db_connection_pool_exhaustion: [RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)",
+            "Confirmed runbook for 'MongoDB connection pool exhausted' \u2014 db_connection_pool_exhaustion: [RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)",
+            "Confirmed runbook for 'MongoDB connection pool exhausted' \u2014 : The resolution process for the database connection pool exhaustion on 2026-09-28 was successful after 3 attempts."
+          ],
+          "memory_trace": [
+            {
+              "tier": "episodic",
+              "query": "Order API HTTP 503 MongoDB connection pool exhausted",
+              "status": "ok",
+              "returned": 5,
+              "accepted": 1,
+              "rejected": 4,
+              "error": null
+            },
+            {
+              "tier": "procedural",
+              "query": "MongoDB connection pool exhausted",
+              "status": "ok",
+              "returned": 5,
+              "accepted": 5,
+              "rejected": 0,
+              "error": null
+            }
+          ],
+          "memory_status": "ok",
+          "memory_errors": [],
+          "model_used": "openai/gpt-oss-120b",
+          "created_at": "2026-09-28T16:55:16.045566Z"
+        }
+      ]
+    },
+    {
+      "name": "GET /incidents/20",
+      "request": {},
+      "status_code": 200,
+      "response": {
+        "id": 20,
+        "service": "Payment API",
+        "symptom": "Payment API is returning HTTP 503 errors with high latency. Logs show 'MongoServerSelectionError: connection pool exhausted' and MongoDB connection utilization at maximum.",
+        "timestamp": "2026-09-28T16:55:02.344632Z",
+        "status": "resolved",
+        "diagnosis_text": "The Payment API is likely suffering from a MongoDB connection pool exhaustion (root\u2011cause family: db_connection_pool_exhaustion). Evidence: HTTP 503 responses, high latency, logs showing 'MongoServerSelectionError: connection pool exhausted', and MongoDB connection utilization at its maximum. This matches historical incidents #13 and #15 and the documented runbook for the same failure pattern, indicating leaked or unreleased connections filling the pool.",
+        "memory_hit_type": "procedural",
+        "confidence_pct": 95.0,
+        "predicted_root_cause_family": "db_connection_pool_exhaustion",
+        "root_cause_family": "db_connection_pool_exhaustion",
+        "suggested_fix_steps": [
+          "Identify code paths that may be leaking MongoDB connections (review recent changes, add connection\u2011acquire/release logging).",
+          "Fix connection handling so every acquired connection is properly released back to the pool (use try/finally or connection\u2011pool APIs).",
+          "Increase the MongoDB maxPoolSize configuration after confirming the database can handle the higher limit.",
+          "Restart the affected Payment API instances to clear any currently exhausted pools.",
+          "Monitor MongoDB connection pool utilization and HTTP 503 rate to confirm the issue is resolved."
+        ],
+        "fix_steps": [
+          "Identify code paths leaking MongoDB connections",
+          "Fix connection reuse so every acquired connection is released",
+          "Increase maxPoolSize after verifying database capacity",
+          "Monitor connection pool utilization and HTTP 503 rate"
+        ],
+        "outcome": "success",
+        "memory_hits": [
+          {
+            "memory_type": "episodic",
+            "query": "MongoServerSelectionError connection pool exhausted HTTP 503 Payment API",
+            "snippet": "[INCIDENT #13 RESOLVED] service=Payment API root_cause_family=The Payment API was creating MongoDB connections for individual requests without reliably releasing them. Over time, the number of active connections increased until the MongoDB connection pool reached its maximum limit. New requests could not obtain a database connection, resulting in HTTP 503 errors and increased latency. outcome=success\nConfirmed fix steps:\n  1. 1. Updated the MongoDB connection handling so that connections are properly reused and released.\n  2. 2. Changed the connection pool configuration from maxPoolSize=50 to  \u2026",
+            "memory_id": "2a49d74f-78f7-4a9c-9ceb-9460af122dda",
+            "historical_incident_id": 13,
+            "service": "Payment API",
+            "timestamp": "2026-09-28T00:00:00+00:00",
+            "root_cause_family": "The Payment API was creating MongoDB connections for individual requests without reliably releasing them. Over time, the number of active connections increased until the MongoDB connection pool reached its maximum limit. New requests could not obtain a database connection, resulting in HTTP 503 errors and increased latency.",
+            "outcome": "success",
+            "relevance_score": 1.096721179708553
+          },
+          {
+            "memory_type": "episodic",
+            "query": "MongoServerSelectionError connection pool exhausted HTTP 503 Payment API",
+            "snippet": "[HISTORICAL INCIDENT #15 RESOLVED] service=Payment API occurred_at=2026-09-28T16:48:01.000467+00:00 status=resolved outcome=success root_cause_family=db_connection_pool_exhaustion\nReported symptoms (the evidence this incident was diagnosed from):\nPayment API is returning HTTP 503 errors with high latency. Logs show 'MongoServerSelectionError: connection pool exhausted' and MongoDB connection utilization at maximum.\nConfirmed root cause family: db_connection_pool_exhaustion\nAgent predicted root cause (unconfirmed): mongo_connection_pool_exhaustion\nConfirmed fix steps (engineer-verified):\n  1. I \u2026",
+            "memory_id": "d7cefbfb-b164-49e2-b1eb-223b2fd07fa7",
+            "historical_incident_id": 15,
+            "service": "Payment API",
+            "timestamp": "2026-09-28T16:48:01.000467+00:00",
+            "root_cause_family": "db_connection_pool_exhaustion",
+            "outcome": "success",
+            "relevance_score": 1.0961368505420916
+          },
+          {
+            "memory_type": "procedural",
+            "query": "MongoDB connection pool exhausted HTTP 503 Payment API runbook",
+            "snippet": "[RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)\nOrdered fix steps:\n  1. Identify code paths leaking MongoDB connections\n  2. Fix connection reuse so every acquired connection is released\n  3. Increase maxPoolSize after verifying database capacity\n  4. Monitor connection pool utilization and HTTP 503 rate",
+            "memory_id": "7636f6e5-953a-45a0-96ef-f1fee1a5a04b",
+            "historical_incident_id": null,
+            "service": null,
+            "timestamp": null,
+            "root_cause_family": "db_connection_pool_exhaustion",
+            "outcome": "success",
+            "relevance_score": 1.0406008793779806
+          },
+          {
+            "memory_type": "procedural",
+            "query": "MongoDB connection pool exhausted HTTP 503 Payment API runbook",
+            "snippet": "The runbook for resolving database connection pool exhaustion involves identifying MongoDB connection leaks, fixing connection reuse, increasing maxPoolSize, and monitoring pool utilization.",
+            "memory_id": "5499c238-873c-4d92-988e-30e8993a20b5",
+            "historical_incident_id": null,
+            "service": null,
+            "timestamp": null,
+            "root_cause_family": null,
+            "outcome": null,
+            "relevance_score": 1.0406008793779806
+          },
+          {
+            "memory_type": "procedural",
+            "query": "MongoDB connection pool exhausted HTTP 503 Payment API runbook",
+            "snippet": "[RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)\nOrdered fix steps:\n  1. Identify code paths leaking MongoDB connections\n  2. Fix connection reuse so every acquired connection is released\n  3. Increase maxPoolSize after verifying database capacity\n  4. Monitor connection pool utilization and HTTP 503 rate",
+            "memory_id": "5a9826da-b8b7-4c60-b619-3bec27fc18e9",
+            "historical_incident_id": null,
+            "service": null,
+            "timestamp": "2026-09-28T00:00:00+00:00",
+            "root_cause_family": "db_connection_pool_exhaustion",
+            "outcome": "success",
+            "relevance_score": 0.17450360852305996
+          },
+          {
+            "memory_type": "procedural",
+            "query": "MongoDB connection pool exhausted HTTP 503 Payment API runbook",
+            "snippet": "The root cause of the issue on 2026-09-28 was identified as database connection pool exhaustion.",
+            "memory_id": "b4b78710-fb03-4d42-a582-e3d26146ba7c",
+            "historical_incident_id": null,
+            "service": null,
+            "timestamp": "2026-09-28T00:00:00+00:00",
+            "root_cause_family": null,
+            "outcome": null,
+            "relevance_score": 0.14132816953010027
+          },
+          {
+            "memory_type": "procedural",
+            "query": "MongoDB connection pool exhausted HTTP 503 Payment API runbook",
+            "snippet": "[RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)\nOrdered fix steps:\n  1. Identify code paths leaking MongoDB connections\n  2. Fix connection reuse so every acquired connection is released\n  3. Increase maxPoolSize after verifying database capacity\n  4. Monitor connection pool utilization and HTTP 503 rate",
+            "memory_id": "399673db-8890-47d5-94ad-15b2482f8d18",
+            "historical_incident_id": null,
+            "service": null,
+            "timestamp": "2026-09-28T00:00:00.020000+00:00",
+            "root_cause_family": "db_connection_pool_exhaustion",
+            "outcome": "success",
+            "relevance_score": 0.08570144611189759
+          }
+        ],
+        "evidence": [
+          "Similar past incident for 'MongoServerSelectionError connection pool exhausted HTTP 503 Payment API' \u2014 historical incident #13 (Payment API), outcome=success: [INCIDENT #13 RESOLVED] service=Payment API root_cause_family=The Payment API was creating MongoDB connections for individual requests without reliably releasin",
+          "Similar past incident for 'MongoServerSelectionError connection pool exhausted HTTP 503 Payment API' \u2014 historical incident #15 (Payment API), outcome=success: [HISTORICAL INCIDENT #15 RESOLVED] service=Payment API occurred_at=2026-09-28T16:48:01.000467+00:00 status=resolved outcome=success root_cause_family=db_connect",
+          "Confirmed runbook for 'MongoDB connection pool exhausted HTTP 503 Payment API runbook' \u2014 db_connection_pool_exhaustion: [RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)",
+          "Confirmed runbook for 'MongoDB connection pool exhausted HTTP 503 Payment API runbook' \u2014 : The runbook for resolving database connection pool exhaustion involves identifying MongoDB connection leaks, fixing connection reuse, increasing maxPoolSize, an",
+          "Confirmed runbook for 'MongoDB connection pool exhausted HTTP 503 Payment API runbook' \u2014 db_connection_pool_exhaustion: [RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)",
+          "Confirmed runbook for 'MongoDB connection pool exhausted HTTP 503 Payment API runbook' \u2014 : The root cause of the issue on 2026-09-28 was identified as database connection pool exhaustion.",
+          "Confirmed runbook for 'MongoDB connection pool exhausted HTTP 503 Payment API runbook' \u2014 db_connection_pool_exhaustion: [RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)"
+        ],
+        "memory_trace": [
+          {
+            "tier": "episodic",
+            "query": "MongoServerSelectionError connection pool exhausted HTTP 503 Payment API",
+            "status": "ok",
+            "returned": 5,
+            "accepted": 2,
+            "rejected": 2,
+            "error": null
+          },
+          {
+            "tier": "procedural",
+            "query": "MongoDB connection pool exhausted HTTP 503 Payment API runbook",
+            "status": "ok",
+            "returned": 5,
+            "accepted": 5,
+            "rejected": 0,
+            "error": null
+          }
+        ],
+        "memory_status": "ok",
+        "memory_errors": [],
+        "model_used": "openai/gpt-oss-120b",
+        "created_at": "2026-09-28T16:55:02.345895Z"
+      }
+    },
+    {
+      "name": "GET /incidents/21",
+      "request": {},
+      "status_code": 200,
+      "response": {
+        "id": 21,
+        "service": "Order API",
+        "symptom": "Order API is intermittently returning HTTP 503 errors with high latency. MongoDB connection utilization: 97%. Logs show 'connection pool exhausted' during peak traffic.",
+        "timestamp": "2026-09-28T16:55:16.044495Z",
+        "status": "diagnosed",
+        "diagnosis_text": "The Order API 503s and high latency are likely caused by MongoDB connection pool exhaustion (connection utilization at 97% and logs showing 'connection pool exhausted'). This mirrors historical Incident #15 on the Payment API, which was confirmed to be a db_connection_pool_exhaustion problem.",
+        "memory_hit_type": "procedural",
+        "confidence_pct": 92.0,
+        "predicted_root_cause_family": "db_connection_pool_exhaustion",
+        "root_cause_family": null,
+        "suggested_fix_steps": [
+          "Identify code paths in the Order API that may be leaking or not releasing MongoDB connections (review recent deployments, add logging around acquire/release).",
+          "Fix the connection reuse logic so every acquired connection is properly released/closed after use.",
+          "Increase the MongoDB driver maxPoolSize setting after confirming the database can handle the higher limit.",
+          "Redeploy the updated Order API and monitor connection pool utilization and HTTP 503 rate to confirm the issue is resolved."
+        ],
+        "fix_steps": [],
+        "outcome": null,
+        "memory_hits": [
+          {
+            "memory_type": "episodic",
+            "query": "Order API HTTP 503 MongoDB connection pool exhausted",
+            "snippet": "[HISTORICAL INCIDENT #15 RESOLVED] service=Payment API occurred_at=2026-09-28T16:48:01.000467+00:00 status=resolved outcome=success root_cause_family=db_connection_pool_exhaustion\nReported symptoms (the evidence this incident was diagnosed from):\nPayment API is returning HTTP 503 errors with high latency. Logs show 'MongoServerSelectionError: connection pool exhausted' and MongoDB connection utilization at maximum.\nConfirmed root cause family: db_connection_pool_exhaustion\nAgent predicted root cause (unconfirmed): mongo_connection_pool_exhaustion\nConfirmed fix steps (engineer-verified):\n  1. I \u2026",
+            "memory_id": "d7cefbfb-b164-49e2-b1eb-223b2fd07fa7",
+            "historical_incident_id": 15,
+            "service": "Payment API",
+            "timestamp": "2026-09-28T16:48:01.000467+00:00",
+            "root_cause_family": "db_connection_pool_exhaustion",
+            "outcome": "success",
+            "relevance_score": 1.094166347544883
+          },
+          {
+            "memory_type": "procedural",
+            "query": "MongoDB connection pool exhausted",
+            "snippet": "The runbook for resolving database connection pool exhaustion involves identifying MongoDB connection leaks, fixing connection reuse, increasing maxPoolSize, and monitoring pool utilization.",
+            "memory_id": "5499c238-873c-4d92-988e-30e8993a20b5",
+            "historical_incident_id": null,
+            "service": null,
+            "timestamp": null,
+            "root_cause_family": null,
+            "outcome": null,
+            "relevance_score": 1.1025188680511566
+          },
+          {
+            "memory_type": "procedural",
+            "query": "MongoDB connection pool exhausted",
+            "snippet": "[RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 3 confirmed attempts)\nOrdered fix steps:\n  1. Identify code paths leaking MongoDB connections\n  2. Fix connection reuse so every acquired connection is released\n  3. Increase maxPoolSize after verifying database capacity\n  4. Monitor connection pool utilization and HTTP 503 rate",
+            "memory_id": "7a7acfff-0920-4343-b558-0e8e994908f0",
+            "historical_incident_id": null,
+            "service": null,
+            "timestamp": null,
+            "root_cause_family": "db_connection_pool_exhaustion",
+            "outcome": "success",
+            "relevance_score": 1.0973839687158908
+          },
+          {
+            "memory_type": "procedural",
+            "query": "MongoDB connection pool exhausted",
+            "snippet": "[RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)\nOrdered fix steps:\n  1. Identify code paths leaking MongoDB connections\n  2. Fix connection reuse so every acquired connection is released\n  3. Increase maxPoolSize after verifying database capacity\n  4. Monitor connection pool utilization and HTTP 503 rate",
+            "memory_id": "7636f6e5-953a-45a0-96ef-f1fee1a5a04b",
+            "historical_incident_id": null,
+            "service": null,
+            "timestamp": null,
+            "root_cause_family": "db_connection_pool_exhaustion",
+            "outcome": "success",
+            "relevance_score": 1.0949288613421198
+          },
+          {
+            "memory_type": "procedural",
+            "query": "MongoDB connection pool exhausted",
+            "snippet": "[RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)\nOrdered fix steps:\n  1. Identify code paths leaking MongoDB connections\n  2. Fix connection reuse so every acquired connection is released\n  3. Increase maxPoolSize after verifying database capacity\n  4. Monitor connection pool utilization and HTTP 503 rate",
+            "memory_id": "399673db-8890-47d5-94ad-15b2482f8d18",
+            "historical_incident_id": null,
+            "service": null,
+            "timestamp": "2026-09-28T00:00:00.020000+00:00",
+            "root_cause_family": "db_connection_pool_exhaustion",
+            "outcome": "success",
+            "relevance_score": 0.978139123900864
+          },
+          {
+            "memory_type": "procedural",
+            "query": "MongoDB connection pool exhausted",
+            "snippet": "The resolution process for the database connection pool exhaustion on 2026-09-28 was successful after 3 attempts.",
+            "memory_id": "d938c232-0982-42b9-8c4f-7098874a79a7",
+            "historical_incident_id": null,
+            "service": null,
+            "timestamp": "2026-09-28T00:00:00.020000+00:00",
+            "root_cause_family": null,
+            "outcome": null,
+            "relevance_score": 0.9770566895026809
+          }
+        ],
+        "evidence": [
+          "Similar past incident for 'Order API HTTP 503 MongoDB connection pool exhausted' \u2014 historical incident #15 (Payment API), outcome=success: [HISTORICAL INCIDENT #15 RESOLVED] service=Payment API occurred_at=2026-09-28T16:48:01.000467+00:00 status=resolved outcome=success root_cause_family=db_connect",
+          "Confirmed runbook for 'MongoDB connection pool exhausted' \u2014 : The runbook for resolving database connection pool exhaustion involves identifying MongoDB connection leaks, fixing connection reuse, increasing maxPoolSize, an",
+          "Confirmed runbook for 'MongoDB connection pool exhausted' \u2014 db_connection_pool_exhaustion: [RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 3 confirmed attempts)",
+          "Confirmed runbook for 'MongoDB connection pool exhausted' \u2014 db_connection_pool_exhaustion: [RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)",
+          "Confirmed runbook for 'MongoDB connection pool exhausted' \u2014 db_connection_pool_exhaustion: [RUNBOOK] root_cause_family=db_connection_pool_exhaustion success_rate=100% (based on 2 confirmed attempts)",
+          "Confirmed runbook for 'MongoDB connection pool exhausted' \u2014 : The resolution process for the database connection pool exhaustion on 2026-09-28 was successful after 3 attempts."
+        ],
+        "memory_trace": [
+          {
+            "tier": "episodic",
+            "query": "Order API HTTP 503 MongoDB connection pool exhausted",
+            "status": "ok",
+            "returned": 5,
+            "accepted": 1,
+            "rejected": 4,
+            "error": null
+          },
+          {
+            "tier": "procedural",
+            "query": "MongoDB connection pool exhausted",
+            "status": "ok",
+            "returned": 5,
+            "accepted": 5,
+            "rejected": 0,
+            "error": null
+          }
+        ],
+        "memory_status": "ok",
+        "memory_errors": [],
+        "model_used": "openai/gpt-oss-120b",
+        "created_at": "2026-09-28T16:55:16.045566Z"
+      }
+    }
+  ],
+  "assertions": [
+    {
+      "name": "A1 suggested_fix_steps non-empty from live Groq (bug A)",
+      "ok": true,
+      "detail": "5 step(s): ['Identify code paths that may be leaking MongoDB connections (review recent changes, add connection\u2011acquire/release logging).', 'Fix connection handling so every acquired connection is properly released back to the pool (use try/finally or connection\u2011pool APIs).']\u2026"
+    },
+    {
+      "name": "A2 current incident absent from its own memory_hits (bug B)",
+      "ok": true,
+      "detail": "hits=[13, 15, None, None, None, None, None]"
+    },
+    {
+      "name": "A3 episodic retention after human resolution succeeded",
+      "ok": true,
+      "detail": "memory_status=ok errors=[]"
+    },
+    {
+      "name": "B1 suggested_fix_steps non-empty on the live response (bug A)",
+      "ok": true,
+      "detail": "4 step(s): ['Identify code paths in the Order API that may be leaking or not releasing MongoDB connections (review recent deployments, add logging around acquire/release).', 'Fix the connection reuse logic so every acquired connection is properly released/closed after use.']\u2026"
+    },
+    {
+      "name": "B2 diagnosis = connection pool exhaustion",
+      "ok": true,
+      "detail": "root_cause_family_guess='db_connection_pool_exhaustion'"
+    },
+    {
+      "name": "B3 Payment API appears as historical evidence",
+      "ok": true,
+      "detail": "hit={'memory_type': 'episodic', 'query': 'Order API HTTP 503 MongoDB connection pool exhausted', 'snippet': \"[HISTORICAL INCIDENT #15 RESOLVED] service=Payment API occurred_at=2026-09-28T16:48:01.000467+00:00 status=resolved outcome=success root_cause_family=db_connection_pool_exhaustion\\nReported symptoms (the evidence this incident was diagnosed from):\\nPayment API is returning HTTP 503 errors with high latency. Logs show 'MongoServerSelectionError: connection pool exhausted' and MongoDB connection utilization at maximum.\\nConfirmed root cause family: db_connection_pool_exhaustion\\nAgent predicted root cause (unconfirmed): mongo_connection_pool_exhaustion\\nConfirmed fix steps (engineer-verified):\\n  1. I \u2026\", 'memory_id': 'd7cefbfb-b164-49e2-b1eb-223b2fd07fa7', 'historical_incident_id': 15, 'service': 'Payment API', 'timestamp': '2026-09-28T16:48:01.000467+00:00', 'root_cause_family': 'db_connection_pool_exhaustion', 'outcome': 'success', 'relevance_score': 1.094166347544883} (memory_ids of all hits: ['d7cefbfb-b164-49e2-b1eb-223b2fd07fa7', '5499c238-873c-4d92-988e-30e8993a20b5', '7a7acfff-0920-4343-b558-0e8e994908f0', '7636f6e5-953a-45a0-96ef-f1fee1a5a04b', '399673db-8890-47d5-94ad-15b2482f8d18', 'd938c232-0982-42b9-8c4f-7098874a79a7'])"
+    },
+    {
+      "name": "B4 current Order incident absent from its own memory_hits (bug B)",
+      "ok": true,
+      "detail": "historical_incident_ids=[15, None, None, None, None, None]"
+    },
+    {
+      "name": "B5 memory_hits contain only RESOLVED, verifiable historical incidents (#14 excluded)",
+      "ok": true,
+      "detail": "unresolved=[] unverifiable=[] | #14 status='diagnosed'"
+    },
+    {
+      "name": "B6 Order API never claimed as a previous incident",
+      "ok": true,
+      "detail": "no previous/prior/earlier Order API phrasing"
+    },
+    {
+      "name": "B7 memory search succeeded (ok, no errors) \u2014 failure != 0 results",
+      "ok": true,
+      "detail": "memory_status='ok' errors=[]"
+    },
+    {
+      "name": "B8 memory_trace recorded with returned/accepted/rejected counts",
+      "ok": true,
+      "detail": "[{\"tier\": \"episodic\", \"status\": \"ok\", \"returned\": 5, \"accepted\": 1, \"rejected\": 4}, {\"tier\": \"procedural\", \"status\": \"ok\", \"returned\": 5, \"accepted\": 5, \"rejected\": 0}]"
+    },
+    {
+      "name": "C1 suggested_fix_steps persisted in SQLite and served by GET",
+      "ok": true,
+      "detail": "payment=5 steps, order=4 steps"
+    },
+    {
+      "name": "C2 predicted vs confirmed root cause stay separate fields",
+      "ok": true,
+      "detail": "predicted='db_connection_pool_exhaustion' (agent guess at diagnosis='db_connection_pool_exhaustion', survived human resolve) confirmed='db_connection_pool_exhaustion' outcome='success'"
+    },
+    {
+      "name": "C3 diagnosis saved against the right incident (status flow)",
+      "ok": true,
+      "detail": "payment=resolved order=diagnosed"
+    }
+  ],
+  "finished_at": "2026-09-28T16:55:38.642827+00:00",
+  "failures": 0,
+  "result": "PASS"
+}

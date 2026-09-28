@@ -1,0 +1,11 @@
+[
+  {
+    "_comment": "Replace with 3-5 incidents derived from PUBLIC postmortems (status-page postmortems, engineering blog write-ups). Paraphrase in your own words, keep 'source_url' so you can cite it honestly in the article. Delete this comment field before use.",
+    "service": "public-api",
+    "symptom": "Paraphrased summary of a real public postmortem's initial symptom, in your own words.",
+    "timestamp": "2026-06-01T09:00:00Z",
+    "known_root_cause_family": "rate_limit_breach",
+    "known_fix_steps": ["Paraphrased summary of the postmortem's remediation steps"],
+    "source_url": "https://status.example.com/incidents/12345"
+  }
+]
